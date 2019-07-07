@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
@@ -8,14 +9,23 @@ public static class ExtensionClassGenerator
 {
     public static string GenerateExtensionClassFor(string namespaceName, Type T)
     {
+        var namespaces = new HashSet<string>();
+        namespaces.Add(T.Namespace);
+
+        // GeneratePropertyExtensions and GenerateEventExtenions both update "namespaces"
+        // as a side-effect.
+        string classBody = GeneratePropertyExtensions() + GenerateEventExtensions();
+        string usingsSection = GenerateUsingsSection();
+
         return 
         $@"
+            {usingsSection}
+
             namespace {namespaceName}
             {{
                 public static class {T.Name}Extensions
                 {{
-                    {GeneratePropertyExtensions()}
-                    {GenerateEventExtensions()}
+                    {classBody}
                 }}
             }}
         ";
@@ -29,7 +39,10 @@ public static class ExtensionClassGenerator
                 .Where(p => p.CanWrite && p.SetMethod.IsPublic);
 
             foreach (PropertyInfo p in settableProperties)
+            {
+                namespaces.Add(p.PropertyType.Namespace);
                 builder.AppendLine(GenerateSinglePropertyExtension(p));
+            }
 
             return builder.ToString();
         }
@@ -42,7 +55,22 @@ public static class ExtensionClassGenerator
                 .Where(e => e.DeclaringType == T);
 
             foreach (EventInfo e in events)
+            {
+                namespaces.Add(e.EventHandlerType.Namespace);
                 builder.AppendLine(GenerateSingleEventExtension(e));
+            }
+
+            return builder.ToString();
+        }
+
+        string GenerateUsingsSection()
+        {
+            var builder = new StringBuilder();
+            var sortedNamespaces = namespaces
+                .OrderBy(s => s);
+
+            foreach (string ns in sortedNamespaces)
+                builder.AppendLine($"using {ns};");
 
             return builder.ToString();
         }

@@ -11,6 +11,10 @@ namespace CodeGeneratorTests
         {
             string expected =
             @"
+                using CodeGeneratorTests;
+                using System;
+                using System.Collections.Generic;
+
                 namespace Foo
                 {
                     public static class ClassWithPropertiesExtensions
@@ -66,8 +70,11 @@ namespace CodeGeneratorTests
         [Fact]
         public void ClassWithEvents_Works()
         {
-            string expected = 
+            string expected =
             @"
+                using CodeGeneratorTests;
+                using System;
+
                 namespace Foo
                 {
                     public static class ClassWithEventsExtensions
