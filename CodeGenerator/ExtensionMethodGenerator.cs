@@ -21,6 +21,7 @@ namespace CodeGenerator
             var builder = new StringBuilder();
             var settableProperties = T
                 .GetProperties()
+                .Where(p => p.DeclaringType == T)   // Skip properties added by parent class
                 .Where(p => p.CanWrite && p.SetMethod.IsPublic);
 
             foreach (PropertyInfo p in settableProperties)
@@ -32,8 +33,11 @@ namespace CodeGenerator
         private static string GenerateEventExtensions(Type T)
         {
             var builder = new StringBuilder();
+            var events = T
+                .GetEvents()
+                .Where(e => e.DeclaringType == T);
 
-            foreach (EventInfo e in T.GetEvents())
+            foreach (EventInfo e in events)
                 builder.AppendLine(GenerateSingleEventExtension(T, e));
 
             return builder.ToString();
