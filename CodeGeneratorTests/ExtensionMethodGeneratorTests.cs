@@ -9,7 +9,7 @@ namespace CodeGeneratorTests
         [Fact]
         public void ClassWithProperties_Works()
         {
-            string expected = 
+            string expected =
             @"
                 public static class ClassWithPropertiesExtensions
                 {
@@ -24,6 +24,27 @@ namespace CodeGeneratorTests
                         where TObject : ClassWithProperties
                     {
                         obj.IntProperty = value;
+                        return obj;
+                    }
+
+                    public static TObject WithGenericProperty<TObject>(this TObject obj, List<Int32> value)
+                        where TObject : ClassWithProperties
+                    {
+                        obj.GenericProperty = value;
+                        return obj;
+                    }
+
+                    public static TObject WithNestedGenericProperty<TObject>(this TObject obj, List<List<List<Int32>>> value)
+                        where TObject : ClassWithProperties
+                    {
+                        obj.NestedGenericProperty = value;
+                        return obj;
+                    }
+
+                    public static TObject WithDoubleGenericProperty<TObject>(this TObject obj, Dictionary<String, Int32> value)
+                        where TObject : ClassWithProperties
+                    {
+                        obj.DoubleGenericProperty = value;
                         return obj;
                     }
                 }
