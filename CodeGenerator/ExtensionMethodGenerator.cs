@@ -2,21 +2,25 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using CodeGenerator;
 
-namespace CodeGenerator
+public static class ExtensionClassGenerator
 {
-    public static class ExtensionMethodGenerator
+    public static string GenerateExtensionClassFor(string namespaceName, Type T)
     {
-        public static string GenerateExtensionClassFor(Type T) => 
+        return 
         $@"
-            public static class {T.Name}Extensions
+            namespace {namespaceName}
             {{
-                {GeneratePropertyExtensions(T)}
-                {GenerateEventExtensions(T)}
+                public static class {T.Name}Extensions
+                {{
+                    {GeneratePropertyExtensions()}
+                    {GenerateEventExtensions()}
+                }}
             }}
         ";
 
-        private static string GeneratePropertyExtensions(Type T)
+        string GeneratePropertyExtensions()
         {
             var builder = new StringBuilder();
             var settableProperties = T
@@ -25,12 +29,12 @@ namespace CodeGenerator
                 .Where(p => p.CanWrite && p.SetMethod.IsPublic);
 
             foreach (PropertyInfo p in settableProperties)
-                builder.AppendLine(GenerateSinglePropertyExtension(T, p));
+                builder.AppendLine(GenerateSinglePropertyExtension(p));
 
             return builder.ToString();
         }
 
-        private static string GenerateEventExtensions(Type T)
+        string GenerateEventExtensions()
         {
             var builder = new StringBuilder();
             var events = T
@@ -38,12 +42,12 @@ namespace CodeGenerator
                 .Where(e => e.DeclaringType == T);
 
             foreach (EventInfo e in events)
-                builder.AppendLine(GenerateSingleEventExtension(T, e));
+                builder.AppendLine(GenerateSingleEventExtension(e));
 
             return builder.ToString();
         }
 
-        private static string GenerateSinglePropertyExtension(Type T, PropertyInfo p) =>
+        string GenerateSinglePropertyExtension(PropertyInfo p) =>
         $@"
             public static TObject With{p.Name}<TObject>(this TObject obj, {p.PropertyType.GenericName()} value)
                 where TObject : {T.Name}
@@ -53,7 +57,7 @@ namespace CodeGenerator
             }}
         ";
 
-        private static string GenerateSingleEventExtension(Type T, EventInfo e) =>
+        string GenerateSingleEventExtension(EventInfo e) =>
         $@"
             public static TObject Handle{e.Name}<TObject>(this TObject obj, {e.EventHandlerType.GenericName()} handler)
                 where TObject : {T.Name}

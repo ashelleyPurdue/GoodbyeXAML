@@ -41,16 +41,8 @@ namespace CodeGenerator
                 Console.WriteLine($"Generating {t.Name}Extensions.cs");
 
                 string outputFilePath = Path.Combine(outputFolder, $"{t.Name}Extensions.cs");
-                File.WriteAllText(outputFilePath,
-                $@"
-                    using System;
-                    using {t.Namespace};
-                    namespace GoodbyeXAML.Wpf
-                    {{
-                        {ExtensionMethodGenerator.GenerateExtensionClassFor(t)}
-                    }}
-                ");
-                
+                string text = ExtensionClassGenerator.GenerateExtensionClassFor("GoodbyeXAML.Wpf", t);
+                File.WriteAllText(outputFilePath, text);
             }
         }
     }

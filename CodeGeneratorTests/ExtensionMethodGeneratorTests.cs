@@ -11,46 +11,49 @@ namespace CodeGeneratorTests
         {
             string expected =
             @"
-                public static class ClassWithPropertiesExtensions
+                namespace Foo
                 {
-                    public static TObject WithStringProperty<TObject>(this TObject obj, String value)
-                        where TObject : ClassWithProperties
+                    public static class ClassWithPropertiesExtensions
                     {
-                        obj.StringProperty = value;
-                        return obj;
-                    }
+                        public static TObject WithStringProperty<TObject>(this TObject obj, String value)
+                            where TObject : ClassWithProperties
+                        {
+                            obj.StringProperty = value;
+                            return obj;
+                        }
 
-                    public static TObject WithIntProperty<TObject>(this TObject obj, Int32 value)
-                        where TObject : ClassWithProperties
-                    {
-                        obj.IntProperty = value;
-                        return obj;
-                    }
+                        public static TObject WithIntProperty<TObject>(this TObject obj, Int32 value)
+                            where TObject : ClassWithProperties
+                        {
+                            obj.IntProperty = value;
+                            return obj;
+                        }
 
-                    public static TObject WithGenericProperty<TObject>(this TObject obj, List<Int32> value)
-                        where TObject : ClassWithProperties
-                    {
-                        obj.GenericProperty = value;
-                        return obj;
-                    }
+                        public static TObject WithGenericProperty<TObject>(this TObject obj, List<Int32> value)
+                            where TObject : ClassWithProperties
+                        {
+                            obj.GenericProperty = value;
+                            return obj;
+                        }
 
-                    public static TObject WithNestedGenericProperty<TObject>(this TObject obj, List<List<List<Int32>>> value)
-                        where TObject : ClassWithProperties
-                    {
-                        obj.NestedGenericProperty = value;
-                        return obj;
-                    }
+                        public static TObject WithNestedGenericProperty<TObject>(this TObject obj, List<List<List<Int32>>> value)
+                            where TObject : ClassWithProperties
+                        {
+                            obj.NestedGenericProperty = value;
+                            return obj;
+                        }
 
-                    public static TObject WithDoubleGenericProperty<TObject>(this TObject obj, Dictionary<String, Int32> value)
-                        where TObject : ClassWithProperties
-                    {
-                        obj.DoubleGenericProperty = value;
-                        return obj;
+                        public static TObject WithDoubleGenericProperty<TObject>(this TObject obj, Dictionary<String, Int32> value)
+                            where TObject : ClassWithProperties
+                        {
+                            obj.DoubleGenericProperty = value;
+                            return obj;
+                        }
                     }
                 }
             ".NormalizeWhitespace();
 
-            string actual = ExtensionMethodGenerator.GenerateExtensionClassFor(typeof(ClassWithProperties))
+            string actual = ExtensionClassGenerator.GenerateExtensionClassFor("Foo", typeof(ClassWithProperties))
                 .NormalizeWhitespace();
 
             Assert.Equal
@@ -65,32 +68,35 @@ namespace CodeGeneratorTests
         {
             string expected = 
             @"
-                public static class ClassWithEventsExtensions
+                namespace Foo
                 {
-                    public static TObject HandleObjEvent<TObject>(this TObject obj, EventHandler<Object> handler)
-                        where TObject : ClassWithEvents
+                    public static class ClassWithEventsExtensions
                     {
-                        obj.ObjEvent += handler;
-                        return obj;
-                    }
+                        public static TObject HandleObjEvent<TObject>(this TObject obj, EventHandler<Object> handler)
+                            where TObject : ClassWithEvents
+                        {
+                            obj.ObjEvent += handler;
+                            return obj;
+                        }
 
-                    public static TObject HandleActionEvent<TObject>(this TObject obj, Action handler)
-                        where TObject : ClassWithEvents
-                    {
-                        obj.ActionEvent += handler;
-                        return obj;
-                    }
+                        public static TObject HandleActionEvent<TObject>(this TObject obj, Action handler)
+                            where TObject : ClassWithEvents
+                        {
+                            obj.ActionEvent += handler;
+                            return obj;
+                        }
 
-                    public static TObject HandleLocalDelegateEvent<TObject>(this TObject obj, LocalDelegate handler)
-                        where TObject : ClassWithEvents
-                    {
-                        obj.LocalDelegateEvent += handler;
-                        return obj;
+                        public static TObject HandleLocalDelegateEvent<TObject>(this TObject obj, LocalDelegate handler)
+                            where TObject : ClassWithEvents
+                        {
+                            obj.LocalDelegateEvent += handler;
+                            return obj;
+                        }
                     }
                 }
             ".NormalizeWhitespace();
 
-            string actual = ExtensionMethodGenerator.GenerateExtensionClassFor(typeof(ClassWithEvents))
+            string actual = ExtensionClassGenerator.GenerateExtensionClassFor("Foo", typeof(ClassWithEvents))
                 .NormalizeWhitespace();
 
             Assert.Equal
