@@ -43,6 +43,8 @@ namespace CodeGenerator
                 string outputFilePath = Path.Combine(outputFolder, $"{t.Name}Extensions.cs");
                 File.WriteAllText(outputFilePath,
                 $@"
+                    using System;
+                    using {t.Namespace};
                     namespace GoodbyeXAML.Wpf
                     {{
                         {ExtensionMethodGenerator.GenerateExtensionClassFor(t)}
