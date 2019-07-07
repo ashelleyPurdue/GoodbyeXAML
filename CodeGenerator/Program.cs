@@ -19,7 +19,6 @@ namespace CodeGenerator
         {
             AllocConsole();
             GenerateWPFExtensions("foo");
-            Console.ReadKey();
             FreeConsole();
         }
 
@@ -28,26 +27,28 @@ namespace CodeGenerator
             if (!Directory.Exists(outputFolder))
                 Directory.CreateDirectory(outputFolder);
 
-            string outFilePath = Path.Combine(outputFolder, "WPFExtensions.cs");
-            using (var outFile = new StreamWriter(outFilePath))
+            // Write the extension method class for every FrameworkElement type.
+            Type frameworkElement = typeof(FrameworkElement);
+
+            var controlTypes = frameworkElement
+                .Assembly
+                .GetTypes()
+                .Where(t => t == frameworkElement || t.IsSubclassOf(frameworkElement))
+                .OrderBy(t => t.FullName);
+
+            foreach (Type t in controlTypes)
             {
-                outFile.WriteLine("namespace GoodbyeXAML.Wpf {");
+                Console.WriteLine($"Generating {t.Name}Extensions.cs");
 
-                // Write the extension method class for every FrameworkElement type.
-                Type frameworkElement = typeof(FrameworkElement);
-
-                var controlTypes = frameworkElement
-                    .Assembly
-                    .GetTypes()
-                    .Where(t => t == frameworkElement || t.IsSubclassOf(frameworkElement))
-                    .OrderBy(t => t.FullName);
-
-                foreach (Type t in controlTypes)
-                {
-                    outFile.WriteLine(ExtensionMethodGenerator.GenerateExtensionClassFor(t));
-                }
-
-                outFile.WriteLine("}");
+                string outputFilePath = Path.Combine(outputFolder, $"{t.Name}Extensions.cs");
+                File.WriteAllText(outputFilePath,
+                $@"
+                    namespace GoodbyeXAML.Wpf
+                    {{
+                        {ExtensionMethodGenerator.GenerateExtensionClassFor(t)}
+                    }}
+                ");
+                
             }
         }
     }
