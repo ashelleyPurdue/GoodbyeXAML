@@ -33,7 +33,7 @@ namespace CodeGenerator
 
         private static string GenerateSinglePropertyExtension(Type T, PropertyInfo p) =>
         $@"
-            public static TObject With{p.Name}<TObject>(this TObject obj, {p.PropertyType.Name} value)
+            public static TObject With{p.Name}<TObject>(this TObject obj, {p.PropertyType.GenericName()} value)
                 where TObject : {T.Name}
             {{
                 obj.{p.Name} = value;
