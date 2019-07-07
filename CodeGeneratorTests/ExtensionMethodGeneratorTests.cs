@@ -38,5 +38,45 @@ namespace CodeGeneratorTests
                 actual
             );
         }
+    
+        [Fact]
+        public void ClassWithEvents_Works()
+        {
+            string expected = 
+            @"
+                public static class ClassWithEventsExtensions
+                {
+                    public static TObject HandleObjEvent<TObject>(this TObject obj, EventHandler<Object> handler)
+                        where TObject : ClassWithEvents
+                    {
+                        obj.ObjEvent += handler;
+                        return obj;
+                    }
+
+                    public static TObject HandleActionEvent<TObject>(this TObject obj, Action handler)
+                        where TObject : ClassWithEvents
+                    {
+                        obj.ActionEvent += handler;
+                        return obj;
+                    }
+
+                    public static TObject HandleLocalDelegateEvent<TObject>(this TObject obj, LocalDelegate handler)
+                        where TObject : ClassWithEvents
+                    {
+                        obj.LocalDelegateEvent += handler;
+                        return obj;
+                    }
+                }
+            ".NormalizeWhitespace();
+
+            string actual = ExtensionMethodGenerator.GenerateExtensionClassFor(typeof(ClassWithEvents))
+                .NormalizeWhitespace();
+
+            Assert.Equal
+            (
+                expected,
+                actual
+            );
+        }
     }
 }
