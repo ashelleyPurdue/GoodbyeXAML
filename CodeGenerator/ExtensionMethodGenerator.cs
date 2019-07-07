@@ -1,45 +1,81 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using CodeGenerator;
 
-namespace CodeGenerator
+public static class ExtensionClassGenerator
 {
-    public static class ExtensionMethodGenerator
+    public static string GenerateExtensionClassFor(string namespaceName, Type T)
     {
-        public static string GenerateExtensionClassFor(Type T) => 
+        var namespaces = new HashSet<string>();
+        namespaces.Add(T.Namespace);
+
+        // GeneratePropertyExtensions and GenerateEventExtenions both update "namespaces"
+        // as a side-effect.
+        string classBody = GeneratePropertyExtensions() + GenerateEventExtensions();
+        string usingsSection = GenerateUsingsSection();
+
+        return 
         $@"
-            public static class {T.Name}Extensions
+            {usingsSection}
+
+            namespace {namespaceName}
             {{
-                {GeneratePropertyExtensions(T)}
-                {GenerateEventExtensions(T)}
+                public static class {T.Name}Extensions
+                {{
+                    {classBody}
+                }}
             }}
         ";
 
-        private static string GeneratePropertyExtensions(Type T)
+        string GeneratePropertyExtensions()
         {
             var builder = new StringBuilder();
             var settableProperties = T
                 .GetProperties()
+                .Where(p => p.DeclaringType == T)   // Skip properties added by parent class
                 .Where(p => p.CanWrite && p.SetMethod.IsPublic);
 
             foreach (PropertyInfo p in settableProperties)
-                builder.AppendLine(GenerateSinglePropertyExtension(T, p));
+            {
+                namespaces.Add(p.PropertyType.Namespace);
+                builder.AppendLine(GenerateSinglePropertyExtension(p));
+            }
 
             return builder.ToString();
         }
 
-        private static string GenerateEventExtensions(Type T)
+        string GenerateEventExtensions()
         {
             var builder = new StringBuilder();
+            var events = T
+                .GetEvents()
+                .Where(e => e.DeclaringType == T);
 
-            foreach (EventInfo e in T.GetEvents())
-                builder.AppendLine(GenerateSingleEventExtension(T, e));
+            foreach (EventInfo e in events)
+            {
+                namespaces.Add(e.EventHandlerType.Namespace);
+                builder.AppendLine(GenerateSingleEventExtension(e));
+            }
 
             return builder.ToString();
         }
 
-        private static string GenerateSinglePropertyExtension(Type T, PropertyInfo p) =>
+        string GenerateUsingsSection()
+        {
+            var builder = new StringBuilder();
+            var sortedNamespaces = namespaces
+                .OrderBy(s => s);
+
+            foreach (string ns in sortedNamespaces)
+                builder.AppendLine($"using {ns};");
+
+            return builder.ToString();
+        }
+
+        string GenerateSinglePropertyExtension(PropertyInfo p) =>
         $@"
             public static TObject With{p.Name}<TObject>(this TObject obj, {p.PropertyType.GenericName()} value)
                 where TObject : {T.Name}
@@ -49,7 +85,7 @@ namespace CodeGenerator
             }}
         ";
 
-        private static string GenerateSingleEventExtension(Type T, EventInfo e) =>
+        string GenerateSingleEventExtension(EventInfo e) =>
         $@"
             public static TObject Handle{e.Name}<TObject>(this TObject obj, {e.EventHandlerType.GenericName()} handler)
                 where TObject : {T.Name}
