@@ -29,7 +29,15 @@ namespace CodeGenerator
             return builder.ToString();
         }
 
-        private static string GenerateEventExtensions(Type T) => "";
+        private static string GenerateEventExtensions(Type T)
+        {
+            var builder = new StringBuilder();
+
+            foreach (EventInfo e in T.GetEvents())
+                builder.AppendLine(GenerateSingleEventExtension(T, e));
+
+            return builder.ToString();
+        }
 
         private static string GenerateSinglePropertyExtension(Type T, PropertyInfo p) =>
         $@"
@@ -37,6 +45,16 @@ namespace CodeGenerator
                 where TObject : {T.Name}
             {{
                 obj.{p.Name} = value;
+                return obj;
+            }}
+        ";
+
+        private static string GenerateSingleEventExtension(Type T, EventInfo e) =>
+        $@"
+            public static TObject Handle{e.Name}<TObject>(this TObject obj, {e.EventHandlerType.GenericName()} handler)
+                where TObject : {T.Name}
+            {{
+                obj.{e.Name} += handler;
                 return obj;
             }}
         ";
