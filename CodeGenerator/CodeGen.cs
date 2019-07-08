@@ -6,7 +6,7 @@ using System.Text;
 using System.Reflection;
 using CodeGenerator;
 
-public static class ExtensionClassGenerator
+public static class CodeGen
 {
     public static void GenerateClassFiles(string outputFolder, string namespaceName, IEnumerable<Type> types)
     {
@@ -15,7 +15,7 @@ public static class ExtensionClassGenerator
             Console.WriteLine($"Generating {t.Name}Extensions.cs");
 
             string outputFilePath = Path.Combine(outputFolder, $"{t.Name}Extensions.cs");
-            string text = ExtensionClassGenerator.GenerateExtensionClassFor("GoodbyeXAML.Wpf", t);
+            string text = GenerateExtensionClassFor("GoodbyeXAML.Wpf", t);
             File.WriteAllText(outputFilePath, text);
         }
     }

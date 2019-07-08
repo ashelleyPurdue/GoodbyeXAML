@@ -36,7 +36,7 @@ namespace CodeGenerator
                 .Where(t => t == frameworkElement || t.IsSubclassOf(frameworkElement))
                 .OrderBy(t => t.FullName);
 
-            ExtensionClassGenerator.GenerateClassFiles(outputFolder, "GoodbyeXAML.Wpf", controlTypes);
+            CodeGen.GenerateClassFiles(outputFolder, "GoodbyeXAML.Wpf", controlTypes);
         }
     }
 }
