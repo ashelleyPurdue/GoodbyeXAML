@@ -24,19 +24,16 @@ namespace CodeGenerator
 
         private static void GenerateWPFExtensions(string outputFolder)
         {
-            if (!Directory.Exists(outputFolder))
-                Directory.CreateDirectory(outputFolder);
-
             // Write the extension method class for every FrameworkElement type.
             Type frameworkElement = typeof(FrameworkElement);
 
-            var controlTypes = frameworkElement
+            var types = frameworkElement
                 .Assembly
                 .GetTypes()
                 .Where(t => t == frameworkElement || t.IsSubclassOf(frameworkElement))
                 .OrderBy(t => t.FullName);
 
-            CodeGen.GenerateClassFiles(outputFolder, "GoodbyeXAML.Wpf", controlTypes);
+            CodeGen.GenerateDotnetCoreProject(outputFolder, "GoodbyeXAML.Wpf.Core", types);
         }
     }
 }

@@ -8,14 +8,31 @@ using CodeGenerator;
 
 public static class CodeGen
 {
+    public static void GenerateDotnetCoreProject(string outputFolder, string projectName, IEnumerable<Type> types)
+    {
+        string projFolder = Path.Combine(outputFolder, projectName);
+        string namespaceName = projectName;
+
+        GenerateClassFiles(projFolder, namespaceName, types);
+        // TODO: Create the .csproj file.
+    }
+
+    public static void GenerateDotnetFrameworkProject(string outputFolder, string projectName, IEnumerable<Type> types)
+    {
+        // TODO
+    }
+
     public static void GenerateClassFiles(string outputFolder, string namespaceName, IEnumerable<Type> types)
     {
+        if (!Directory.Exists(outputFolder))
+            Directory.CreateDirectory(outputFolder);
+
         foreach (Type t in types)
         {
             Console.WriteLine($"Generating {t.Name}Extensions.cs");
 
             string outputFilePath = Path.Combine(outputFolder, $"{t.Name}Extensions.cs");
-            string text = GenerateExtensionClassFor("GoodbyeXAML.Wpf", t);
+            string text = GenerateExtensionClassFor(namespaceName, t);
             File.WriteAllText(outputFilePath, text);
         }
     }
