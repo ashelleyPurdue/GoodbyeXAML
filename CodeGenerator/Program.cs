@@ -18,7 +18,7 @@ namespace CodeGenerator
         static void Main(string[] args)
         {
             AllocConsole();
-            GenerateWPFExtensions("foo");
+            GenerateWPFExtensions("../../../../GeneratedExtensionMethods");
             FreeConsole();
         }
 
@@ -36,14 +36,7 @@ namespace CodeGenerator
                 .Where(t => t == frameworkElement || t.IsSubclassOf(frameworkElement))
                 .OrderBy(t => t.FullName);
 
-            foreach (Type t in controlTypes)
-            {
-                Console.WriteLine($"Generating {t.Name}Extensions.cs");
-
-                string outputFilePath = Path.Combine(outputFolder, $"{t.Name}Extensions.cs");
-                string text = ExtensionClassGenerator.GenerateExtensionClassFor("GoodbyeXAML.Wpf", t);
-                File.WriteAllText(outputFilePath, text);
-            }
+            ExtensionClassGenerator.GenerateClassFiles(outputFolder, "GoodbyeXAML.Wpf", controlTypes);
         }
     }
 }

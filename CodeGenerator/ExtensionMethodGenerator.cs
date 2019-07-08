@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,18 @@ using CodeGenerator;
 
 public static class ExtensionClassGenerator
 {
+    public static void GenerateClassFiles(string outputFolder, string namespaceName, IEnumerable<Type> types)
+    {
+        foreach (Type t in types)
+        {
+            Console.WriteLine($"Generating {t.Name}Extensions.cs");
+
+            string outputFilePath = Path.Combine(outputFolder, $"{t.Name}Extensions.cs");
+            string text = ExtensionClassGenerator.GenerateExtensionClassFor("GoodbyeXAML.Wpf", t);
+            File.WriteAllText(outputFilePath, text);
+        }
+    }
+
     public static string GenerateExtensionClassFor(string namespaceName, Type T)
     {
         var namespaces = new HashSet<string>();
