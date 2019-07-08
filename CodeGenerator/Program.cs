@@ -34,6 +34,7 @@ namespace CodeGenerator
                 .OrderBy(t => t.FullName);
 
             CodeGen.GenerateDotnetCoreProject(outputFolder, "GoodbyeXAML.Wpf.Core", types);
+            CodeGen.GenerateDotnetFrameworkProject(outputFolder, "GoodbyeXAML.Wpf.Framework", types);
         }
     }
 }

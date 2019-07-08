@@ -11,10 +11,21 @@ public static class CodeGen
     public static void GenerateDotnetCoreProject(string outputFolder, string projectName, IEnumerable<Type> types)
     {
         string projFolder = Path.Combine(outputFolder, projectName);
+        string csprojName = Path.Combine(outputFolder, projectName, projectName + ".csproj");
         string namespaceName = projectName;
 
         GenerateClassFiles(projFolder, namespaceName, types);
-        // TODO: Create the .csproj file.
+        File.WriteAllText(csprojName, GenerateCSProj());
+
+        string GenerateCSProj() =>
+        $@"
+            <Project Sdk=""Microsoft.NET.Sdk"">
+                <PropertyGroup>
+                    <OutputType>Exe</OutputType>
+                    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+                </PropertyGroup>
+            </Project>
+        ";
     }
 
     public static void GenerateDotnetFrameworkProject(string outputFolder, string projectName, IEnumerable<Type> types)
