@@ -8,7 +8,7 @@ using CodeGenerator;
 
 public static class CodeGen
 {
-    public static void GenerateDotnetCoreProject(string outputFolder, string projectName, IEnumerable<Type> types)
+    public static void GenerateWPFDotnetCoreProject(string outputFolder, string projectName, IEnumerable<Type> types)
     {
         string projFolder = Path.Combine(outputFolder, projectName);
         string csprojName = Path.Combine(outputFolder, projectName, projectName + ".csproj");
@@ -19,11 +19,13 @@ public static class CodeGen
 
         string GenerateCSProj() =>
         $@"
-            <Project Sdk=""Microsoft.NET.Sdk"">
+            <Project Sdk=""Microsoft.NET.Sdk.WindowsDesktop"">
                 <PropertyGroup>
-                    <OutputType>Exe</OutputType>
-                    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
-                </PropertyGroup>
+                    <OutputType>WinExe</OutputType>
+                    <TargetFramework>netcoreapp3.0</TargetFramework>
+                    <RootNamespace>{namespaceName}</RootNamespace>
+                    <UseWPF>true</UseWPF>
+                 </PropertyGroup>
             </Project>
         ";
     }
