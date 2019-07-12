@@ -83,7 +83,7 @@ public static class CodeGen
 
             foreach (PropertyInfo p in settableProperties)
             {
-                namespaces.Add(p.PropertyType.Namespace);
+                namespaces.AddRange(p.PropertyType.AllReferencedNamespaces());
                 builder.AppendLine(GenerateSinglePropertyExtension(p));
             }
 
@@ -99,7 +99,7 @@ public static class CodeGen
 
             foreach (EventInfo e in events)
             {
-                namespaces.Add(e.EventHandlerType.Namespace);
+                namespaces.AddRange(e.EventHandlerType.AllReferencedNamespaces());
                 builder.AppendLine(GenerateSingleEventExtension(e));
             }
 
