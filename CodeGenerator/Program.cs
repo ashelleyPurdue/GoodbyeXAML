@@ -32,6 +32,7 @@ namespace CodeGenerator
                 .GetTypes()
                 .Where(t => t == frameworkElement || t.IsSubclassOf(frameworkElement))
                 .Where(t => t.IsPublic)
+                .Where(t => !t.IsGenericType)
                 .OrderBy(t => t.FullName);
 
             CodeGen.GenerateDotnetCoreProject(outputFolder, "GoodbyeXAML.Wpf.Core", types);
