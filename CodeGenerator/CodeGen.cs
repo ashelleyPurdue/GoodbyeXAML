@@ -120,8 +120,7 @@ public static class CodeGen
 
         string GenerateSinglePropertyExtension(PropertyInfo p) =>
         $@"
-            public static TObject With{p.Name}<TObject>(this TObject obj, {p.PropertyType.GenericName()} value)
-                where TObject : {T.Name}
+            public static {FunctionSignature($"With{p.Name}", p.PropertyType, "value")}
             {{
                 obj.{p.Name} = value;
                 return obj;
@@ -130,12 +129,21 @@ public static class CodeGen
 
         string GenerateSingleEventExtension(EventInfo e) =>
         $@"
-            public static TObject Handle{e.Name}<TObject>(this TObject obj, {e.EventHandlerType.GenericName()} handler)
-                where TObject : {T.Name}
+            public static {FunctionSignature($"Handle{e.Name}", e.EventHandlerType, "handler")}
             {{
                 obj.{e.Name} += handler;
                 return obj;
             }}
         ";
+
+        string FunctionSignature(string funcName, Type paramType, string paramName) => IsValidGenericConstraint()
+            ? $"TObject {funcName}<TObject>(this TObject obj, {paramType.GenericName()} {paramName}) where TObject : {T.Name}"
+            : $"{T.Name} {funcName}(this {T.Name} obj, {paramType.GenericName()} {paramName})";
+
+        bool IsValidGenericConstraint() =>
+            (T.IsInterface) ||
+            (T.IsGenericTypeParameter) ||
+            (!T.IsSealed);
     }
+
 }
