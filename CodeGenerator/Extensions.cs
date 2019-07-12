@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CodeGenerator
 {
-    public static class TypeExtensions
+    public static class Extensions
     {
         public static string GenericName(this Type T)
         {
@@ -63,6 +63,18 @@ namespace CodeGenerator
                 foreach (string ns in genericArg.AllReferencedNamespaces())
                     yield return ns;
             }
+        }
+
+        /// <summary>
+        /// Why does this *not* exist by default?
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="set"></param>
+        /// <param name="contents"></param>
+        public static void AddRange<T>(this HashSet<T> set, IEnumerable<T> contents)
+        {
+            foreach (T item in contents)
+                set.Add(item);
         }
     }
 }
