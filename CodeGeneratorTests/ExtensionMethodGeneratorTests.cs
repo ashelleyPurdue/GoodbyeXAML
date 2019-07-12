@@ -57,7 +57,7 @@ namespace CodeGeneratorTests
                 }
             ".NormalizeWhitespace();
 
-            string actual = ExtensionClassGenerator.GenerateExtensionClassFor("Foo", typeof(ClassWithProperties))
+            string actual = CodeGen.GenerateExtensionClassFor("Foo", typeof(ClassWithProperties))
                 .NormalizeWhitespace();
 
             Assert.Equal
@@ -103,7 +103,7 @@ namespace CodeGeneratorTests
                 }
             ".NormalizeWhitespace();
 
-            string actual = ExtensionClassGenerator.GenerateExtensionClassFor("Foo", typeof(ClassWithEvents))
+            string actual = CodeGen.GenerateExtensionClassFor("Foo", typeof(ClassWithEvents))
                 .NormalizeWhitespace();
 
             Assert.Equal
