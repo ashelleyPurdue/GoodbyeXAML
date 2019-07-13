@@ -37,7 +37,7 @@ public static class CodeGen
         string csprojName = Path.Combine(outputFolder, projectName, projectName + ".csproj");
         string namespaceName = projectName;
         string assemblyName = projectName;
-        const string frameworkVersion = "v4.7.2";
+        const string frameworkVersion = "v4.8";
 
         GenerateClassFiles(projFolder, namespaceName, types);
         File.WriteAllText(csprojName, GenerateCSProj());
