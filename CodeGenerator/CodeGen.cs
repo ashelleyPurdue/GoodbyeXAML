@@ -86,7 +86,7 @@ public static class CodeGen
                     <Reference Include=""System.Data.DataSetExtensions"" />
                     <Reference Include=""System.Net.Http"" />
                     <Reference Include=""System.Xaml"">
-                    <RequiredTargetFramework>4.0</RequiredTargetFramework>
+                        <RequiredTargetFramework>4.0</RequiredTargetFramework>
                     </Reference>
                     <Reference Include=""WindowsBase"" />
                     <Reference Include=""PresentationCore"" />
@@ -94,27 +94,18 @@ public static class CodeGen
                 </ItemGroup>
                 <ItemGroup>
                     <Compile Include=""Properties\AssemblyInfo.cs"">
-                    <SubType>Code</SubType>
+                        <SubType>Code</SubType>
                     </Compile>
                     <Compile Include=""Properties\Resources.Designer.cs"">
-                    <AutoGen>True</AutoGen>
-                    <DesignTime>True</DesignTime>
-                    <DependentUpon>Resources.resx</DependentUpon>
-                    </Compile>
-                    <Compile Include=""Properties\Settings.Designer.cs"">
-                    <AutoGen>True</AutoGen>
-                    <DependentUpon>Settings.settings</DependentUpon>
-                    <DesignTimeSharedInput>True</DesignTimeSharedInput>
+                        <AutoGen>True</AutoGen>
+                        <DesignTime>True</DesignTime>
+                        <DependentUpon>Resources.resx</DependentUpon>
                     </Compile>
                     {GenerateCompileIncludes()}
                     <EmbeddedResource Include=""Properties\Resources.resx"">
-                    <Generator>ResXFileCodeGenerator</Generator>
-                    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+                        <Generator>ResXFileCodeGenerator</Generator>
+                        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
                     </EmbeddedResource>
-                    <None Include=""Properties\Settings.settings"">
-                    <Generator>SettingsSingleFileGenerator</Generator>
-                    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-                    </None>
                 </ItemGroup>
                 <Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />
             </Project>
