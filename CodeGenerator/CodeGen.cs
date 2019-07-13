@@ -36,6 +36,7 @@ public static class CodeGen
         string projFolder = Path.Combine(outputFolder, projectName);
         string csprojName = Path.Combine(outputFolder, projectName, projectName + ".csproj");
         string namespaceName = projectName;
+        string assemblyName = projectName;
         string projectGuid = Guid.NewGuid().ToString();
         const string frameworkVersion = "v4.7.2";
 
@@ -52,8 +53,8 @@ public static class CodeGen
                     <Platform Condition="" '$(Platform)' == '' "">AnyCPU</Platform>
                     <ProjectGuid>{{{projectGuid}}}</ProjectGuid>
                     <OutputType>library</OutputType>
-                    <RootNamespace>SimpleUserControlLibrary</RootNamespace>
-                    <AssemblyName>SimpleUserControlLibrary</AssemblyName>
+                    <RootNamespace>{namespaceName}</RootNamespace>
+                    <AssemblyName>{assemblyName}</AssemblyName>
                     <TargetFrameworkVersion>{frameworkVersion}</TargetFrameworkVersion>
                     <FileAlignment>512</FileAlignment>
                     <ProjectTypeGuids>{{60dc8134-eba5-43b8-bcc9-bb4bc16c2548}};{{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}}</ProjectTypeGuids>
