@@ -108,7 +108,7 @@ public static class CodeGen
                     <DependentUpon>Settings.settings</DependentUpon>
                     <DesignTimeSharedInput>True</DesignTimeSharedInput>
                     </Compile>
-                    <Compile Include=""SomeExtensions.cs"" />
+                    {GenerateCompileIncludes()}
                     <EmbeddedResource Include=""Properties\Resources.resx"">
                     <Generator>ResXFileCodeGenerator</Generator>
                     <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -121,6 +121,15 @@ public static class CodeGen
                 <Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />
             </Project>
         ";
+
+        string GenerateCompileIncludes()
+        {
+            var builder = new StringBuilder();
+            foreach (Type t in types)
+                builder.AppendLine($@"<Compile Include=""{t.Name}Extensions.cs"" />");
+
+            return builder.ToString();
+        }
     }
 
     public static void GenerateClassFiles(string outputFolder, string namespaceName, IEnumerable<Type> types)
