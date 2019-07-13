@@ -93,9 +93,6 @@ public static class CodeGen
                     <Reference Include=""PresentationFramework"" />
                 </ItemGroup>
                 <ItemGroup>
-                    <Compile Include=""Properties\AssemblyInfo.cs"">
-                        <SubType>Code</SubType>
-                    </Compile>
                     {GenerateCompileIncludes()}
                 </ItemGroup>
                 <Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />
