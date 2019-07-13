@@ -96,16 +96,7 @@ public static class CodeGen
                     <Compile Include=""Properties\AssemblyInfo.cs"">
                         <SubType>Code</SubType>
                     </Compile>
-                    <Compile Include=""Properties\Resources.Designer.cs"">
-                        <AutoGen>True</AutoGen>
-                        <DesignTime>True</DesignTime>
-                        <DependentUpon>Resources.resx</DependentUpon>
-                    </Compile>
                     {GenerateCompileIncludes()}
-                    <EmbeddedResource Include=""Properties\Resources.resx"">
-                        <Generator>ResXFileCodeGenerator</Generator>
-                        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-                    </EmbeddedResource>
                 </ItemGroup>
                 <Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />
             </Project>
