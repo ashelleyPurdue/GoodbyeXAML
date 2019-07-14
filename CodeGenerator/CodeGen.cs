@@ -11,7 +11,7 @@ public static class CodeGen
     public static void GenerateWPFDotnetCoreProject(string outputFolder, string projectName, IEnumerable<Type> types)
     {
         string projFolder = Path.Combine(outputFolder, projectName);
-        string csprojName = Path.Combine(outputFolder, projectName, projectName + ".csproj");
+        string csprojName = Path.Combine(projFolder, projectName + ".csproj");
         string namespaceName = projectName;
 
         GenerateClassFiles(projFolder, namespaceName, types);
@@ -34,13 +34,38 @@ public static class CodeGen
     {
         // TODO: Refactor this duplicated code.
         string projFolder = Path.Combine(outputFolder, projectName);
-        string csprojName = Path.Combine(outputFolder, projectName, projectName + ".csproj");
+        string csprojName = Path.Combine(projFolder, projectName + ".csproj");
+        string nuspecName = Path.Combine(projFolder, projectName + ".nuspec");
         string namespaceName = projectName;
         string assemblyName = projectName;
         const string frameworkVersion = "v4.8";
 
+        string packageId = projectName;
+        string packageVersion = "0.0.1";
+        string packageTitle = projectName;
+        string packageAuthor = "Alex Shelley";
+
         GenerateClassFiles(projFolder, namespaceName, types);
         File.WriteAllText(csprojName, GenerateCSProj());
+        File.WriteAllText(nuspecName, GenerateNuspec());
+
+        string GenerateNuspec() =>
+        $@"
+            <package>
+                <metadata>
+                    <id>{packageId}</id>
+                    <version>{packageVersion}</version>
+                    <title>{packageTitle}</title>
+                    <authors>{packageAuthor}</authors>
+                    <owners>{packageAuthor}</owners>
+                    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+                    <projectUrl>https://github.com/ashelleyPurdue/GoodbyeXAML</projectUrl>
+                    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+                    <description>foo description</description>
+                    <copyright>Copyright {DateTime.Now.Year}</copyright>
+                </metadata>
+            </package>
+        ";
 
         string GenerateCSProj() =>
         $@"
