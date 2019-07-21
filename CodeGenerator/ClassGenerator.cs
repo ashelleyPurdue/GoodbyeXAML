@@ -54,7 +54,7 @@ namespace CodeGenerator
             }}
         ";
 
-        internal string UsingsSection()
+        public string UsingsSection()
         {
             var builder = new StringBuilder();
             var sortedNamespaces = namespaces
