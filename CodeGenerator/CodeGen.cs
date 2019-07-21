@@ -28,6 +28,8 @@ public static class CodeGen
                     <RootNamespace>{namespaceName}</RootNamespace>
                     <UseWPF>true</UseWPF>
                  </PropertyGroup>
+
+                <Import Project=""../../LambdaBinding/LambdaBinding.projitems"" Label=""Shared"" />
             </Project>
         ";
     }
