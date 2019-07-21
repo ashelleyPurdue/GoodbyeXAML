@@ -156,9 +156,11 @@ public static class CodeGen
         var namespaces = new HashSet<string>();
         namespaces.Add(T.Namespace);
 
-        // GeneratePropertyExtensions and GenerateEventExtenions both update "namespaces"
-        // as a side-effect.
-        string classBody = GeneratePropertyExtensions() + GenerateEventExtensions();
+        // GenerateWithPropertyExtensions and GenerateHandleEventExtensions both update "namespaces"
+        // as a side-effect.  This is so we can generate the "usings" section.
+        string classBody = 
+            GenerateWithPropertyExtensions() + 
+            GenerateHandleEventExtensions();
         string usingsSection = GenerateUsingsSection();
 
         return 
@@ -174,7 +176,7 @@ public static class CodeGen
             }}
         ";
 
-        string GeneratePropertyExtensions()
+        string GenerateWithPropertyExtensions()
         {
             var builder = new StringBuilder();
             var settableProperties = T
@@ -185,13 +187,22 @@ public static class CodeGen
             foreach (PropertyInfo p in settableProperties)
             {
                 namespaces.AddRange(p.PropertyType.AllReferencedNamespaces());
-                builder.AppendLine(GenerateSinglePropertyExtension(p));
+                builder.AppendLine(GenerateSingle(p));
             }
 
             return builder.ToString();
+
+            string GenerateSingle(PropertyInfo p) =>
+            $@"
+                public static {FunctionSignature($"With{p.Name}", p.PropertyType.GenericName(), "value")}
+                {{
+                    obj.{p.Name} = value;
+                    return obj;
+                }}
+            ";
         }
 
-        string GenerateEventExtensions()
+        string GenerateHandleEventExtensions()
         {
             var builder = new StringBuilder();
             var events = T
@@ -201,10 +212,19 @@ public static class CodeGen
             foreach (EventInfo e in events)
             {
                 namespaces.AddRange(e.EventHandlerType.AllReferencedNamespaces());
-                builder.AppendLine(GenerateSingleEventExtension(e));
+                builder.AppendLine(GenerateSingle(e));
             }
 
             return builder.ToString();
+
+            string GenerateSingle(EventInfo e) =>
+            $@"
+                public static {FunctionSignature($"Handle{e.Name}", e.EventHandlerType.GenericName(), "handler")}
+                {{
+                    obj.{e.Name} += handler;
+                    return obj;
+                }}
+            ";
         }
 
         string GenerateUsingsSection()
@@ -219,27 +239,9 @@ public static class CodeGen
             return builder.ToString();
         }
 
-        string GenerateSinglePropertyExtension(PropertyInfo p) =>
-        $@"
-            public static {FunctionSignature($"With{p.Name}", p.PropertyType, "value")}
-            {{
-                obj.{p.Name} = value;
-                return obj;
-            }}
-        ";
-
-        string GenerateSingleEventExtension(EventInfo e) =>
-        $@"
-            public static {FunctionSignature($"Handle{e.Name}", e.EventHandlerType, "handler")}
-            {{
-                obj.{e.Name} += handler;
-                return obj;
-            }}
-        ";
-
-        string FunctionSignature(string funcName, Type paramType, string paramName) => IsValidGenericConstraint()
-            ? $"TObject {funcName}<TObject>(this TObject obj, {paramType.GenericName()} {paramName}) where TObject : {T.Name}"
-            : $"{T.Name} {funcName}(this {T.Name} obj, {paramType.GenericName()} {paramName})";
+        string FunctionSignature(string funcName, string paramType, string paramName) => IsValidGenericConstraint()
+            ? $"TObject {funcName}<TObject>(this TObject obj, {paramType} {paramName}) where TObject : {T.Name}"
+            : $"{T.Name} {funcName}(this {T.Name} obj, {paramType} {paramName})";
 
         bool IsValidGenericConstraint() =>
             (T.IsInterface) ||
