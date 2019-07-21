@@ -28,7 +28,7 @@ namespace CodeGeneratorTests
                 code = code.Replace("  ", " ");
             }
 
-            return code;
+            return code.Trim();
         }
     }
 }
