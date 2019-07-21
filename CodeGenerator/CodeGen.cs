@@ -17,6 +17,8 @@ public static class CodeGen
         GenerateClassFiles(projFolder, namespaceName, types);
         File.WriteAllText(csprojName, GenerateCSProj());
 
+        // TODO: Generate nuspec
+        // TODO: Add shared project reference to LambdaBinding
         string GenerateCSProj() =>
         $@"
             <Project Sdk=""Microsoft.NET.Sdk.WindowsDesktop"">
@@ -119,6 +121,7 @@ public static class CodeGen
                 <ItemGroup>
                     {GenerateCompileIncludes()}
                 </ItemGroup>
+                <Import Project=""../../LambdaBinding/LambdaBinding.projitems"" Label=""Shared"" />
                 <Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />
             </Project>
         ";
