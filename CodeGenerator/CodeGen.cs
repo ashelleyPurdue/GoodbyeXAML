@@ -132,137 +132,24 @@ public static class CodeGen
 
     public static string GenerateExtensionClassFor(string namespaceName, Type T)
     {
-        var namespaces = new HashSet<string>();
-        namespaces.Add(T.Namespace);
-        namespaces.Add("GoodbyeXAML.LambdaBinding");
-        namespaces.Add("System.Linq.Expressions");
-        namespaces.Add("System");
+        var settableProperties = T
+            .GetProperties()
+            .Where(p => p.DeclaringType == T)   // Skip properties added by parent class
+            .Where(p => p.CanWrite && p.SetMethod.IsPublic);
 
-        // GenerateWithPropertyExtensions and GenerateHandleEventExtensions both update "namespaces"
-        // as a side-effect.  This is so we can generate the "usings" section.
-        string classBody = 
-            GenerateWithPropertyExtensions() +
-            GenerateBindPropertyExtensions() +
-            GenerateHandleEventExtensions();
+        var events = T
+            .GetEvents()
+            .Where(e => e.DeclaringType == T);
 
-        string usingsSection = GenerateUsingsSection();
+        var generator = new ClassGenerator(namespaceName, T.Name + "Extensions");
 
-        return 
-        $@"
-            {usingsSection}
+        foreach (PropertyInfo p in settableProperties)
+            generator.AddProperty(p);
 
-            namespace {namespaceName}
-            {{
-                public static class {T.Name}Extensions
-                {{
-                    {classBody}
-                }}
-            }}
-        ";
+        foreach (EventInfo e in events)
+            generator.AddEvent(e);
 
-        // TODO: All of these Generate___Extensions() methods contain high
-        // duplication.  Find a way to refactor it away.
-        string GenerateWithPropertyExtensions()
-        {
-            var builder = new StringBuilder();
-            var settableProperties = T
-                .GetProperties()
-                .Where(p => p.DeclaringType == T)   // Skip properties added by parent class
-                .Where(p => p.CanWrite && p.SetMethod.IsPublic);
-
-            foreach (PropertyInfo p in settableProperties)
-            {
-                namespaces.AddRange(p.PropertyType.AllReferencedNamespaces());
-                builder.AppendLine(GenerateSingle(p));
-            }
-
-            return builder.ToString();
-
-            string GenerateSingle(PropertyInfo p) =>
-            $@"
-                public static {FunctionSignature($"With{p.Name}", p.PropertyType.GenericName(), "value")}
-                {{
-                    obj.{p.Name} = value;
-                    return obj;
-                }}
-            ";
-        }
-
-        string GenerateBindPropertyExtensions()
-        {
-            var builder = new StringBuilder();
-            var settableProperties = T
-                .GetProperties()
-                .Where(p => p.DeclaringType == T)   // Skip properties added by parent class
-                .Where(p => p.CanWrite && p.SetMethod.IsPublic);
-
-            foreach (PropertyInfo p in settableProperties)
-            {
-                namespaces.AddRange(p.PropertyType.AllReferencedNamespaces());
-                builder.AppendLine(GenerateSingle(p));
-            }
-
-            return builder.ToString();
-
-            string GenerateSingle(PropertyInfo p) =>
-            $@"
-                public static {FunctionSignature($"Bind{p.Name}", $"Expression<Func<{p.PropertyType.GenericName()}>>", "resultExpression")}
-                {{
-                    Utils.WhenExpressionChanges(obj, resultExpression, (o, result) =>
-                    {{
-                        o.{p.Name} = result;
-                    }});
-
-                    return obj;
-                }}
-            ";
-        }
-
-        string GenerateHandleEventExtensions()
-        {
-            var builder = new StringBuilder();
-            var events = T
-                .GetEvents()
-                .Where(e => e.DeclaringType == T);
-
-            foreach (EventInfo e in events)
-            {
-                namespaces.AddRange(e.EventHandlerType.AllReferencedNamespaces());
-                builder.AppendLine(GenerateSingle(e));
-            }
-
-            return builder.ToString();
-
-            string GenerateSingle(EventInfo e) =>
-            $@"
-                public static {FunctionSignature($"Handle{e.Name}", e.EventHandlerType.GenericName(), "handler")}
-                {{
-                    obj.{e.Name} += handler;
-                    return obj;
-                }}
-            ";
-        }
-
-        string GenerateUsingsSection()
-        {
-            var builder = new StringBuilder();
-            var sortedNamespaces = namespaces
-                .OrderBy(s => s);   // Sort it alphabetically so the order is deterministic for the unit tests.
-
-            foreach (string ns in sortedNamespaces)
-                builder.AppendLine($"using {ns};");
-
-            return builder.ToString();
-        }
-
-        string FunctionSignature(string funcName, string paramType, string paramName) => IsValidGenericConstraint()
-            ? $"TObject {funcName}<TObject>(this TObject obj, {paramType} {paramName}) where TObject : {T.Name}"
-            : $"{T.Name} {funcName}(this {T.Name} obj, {paramType} {paramName})";
-
-        bool IsValidGenericConstraint() =>
-            (T.IsInterface) ||
-            (T.IsGenericTypeParameter) ||
-            (!T.IsSealed);
+        return generator.Generate();
     }
 
 }

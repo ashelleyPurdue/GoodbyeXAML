@@ -76,5 +76,8 @@ namespace CodeGenerator
             foreach (T item in contents)
                 set.Add(item);
         }
+
+        public static void AddRange<T>(this HashSet<T> set, params T[] contents) 
+            => set.AddRange((IEnumerable<T>)contents);
     }
 }
