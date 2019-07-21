@@ -9,4 +9,6 @@
     <Import Project="../LambdaBinding/LambdaBinding.projitems" Label="Shared" />
 
     <Import Project="..\..\GeneratedExtensionMethods\GoodbyeXAML.Wpf.Shared\GoodbyeXAML.Wpf.Shared.projitems" Label="Shared" />
+
+    <Import Project="..\GoodbyeXAML.Wpf.Shared.HandWritten\GoodbyeXAML.Wpf.Shared.HandWritten.projitems" Label="Shared" />
 </Project>
