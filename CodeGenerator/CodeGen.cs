@@ -155,12 +155,17 @@ public static class CodeGen
     {
         var namespaces = new HashSet<string>();
         namespaces.Add(T.Namespace);
+        namespaces.Add("GoodbyeXAML.LambdaBinding");
+        namespaces.Add("System.Linq.Expressions");
+        namespaces.Add("System");
 
         // GenerateWithPropertyExtensions and GenerateHandleEventExtensions both update "namespaces"
         // as a side-effect.  This is so we can generate the "usings" section.
         string classBody = 
-            GenerateWithPropertyExtensions() + 
+            GenerateWithPropertyExtensions() +
+            GenerateBindPropertyExtensions() +
             GenerateHandleEventExtensions();
+
         string usingsSection = GenerateUsingsSection();
 
         return 
@@ -176,6 +181,8 @@ public static class CodeGen
             }}
         ";
 
+        // TODO: All of these Generate___Extensions() methods contain high
+        // duplication.  Find a way to refactor it away.
         string GenerateWithPropertyExtensions()
         {
             var builder = new StringBuilder();
@@ -197,6 +204,36 @@ public static class CodeGen
                 public static {FunctionSignature($"With{p.Name}", p.PropertyType.GenericName(), "value")}
                 {{
                     obj.{p.Name} = value;
+                    return obj;
+                }}
+            ";
+        }
+
+        string GenerateBindPropertyExtensions()
+        {
+            var builder = new StringBuilder();
+            var settableProperties = T
+                .GetProperties()
+                .Where(p => p.DeclaringType == T)   // Skip properties added by parent class
+                .Where(p => p.CanWrite && p.SetMethod.IsPublic);
+
+            foreach (PropertyInfo p in settableProperties)
+            {
+                namespaces.AddRange(p.PropertyType.AllReferencedNamespaces());
+                builder.AppendLine(GenerateSingle(p));
+            }
+
+            return builder.ToString();
+
+            string GenerateSingle(PropertyInfo p) =>
+            $@"
+                public static {FunctionSignature($"Bind{p.Name}", $"Expression<Func<{p.PropertyType.GenericName()}>>", "resultExpression")}
+                {{
+                    Utils.WhenExpressionChanges(obj, resultExpression, (o, result) =>
+                    {{
+                        o.{p.Name} = result;
+                    }});
+
                     return obj;
                 }}
             ";

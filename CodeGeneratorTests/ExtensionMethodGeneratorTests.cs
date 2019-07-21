@@ -15,6 +15,7 @@ namespace CodeGeneratorTests
                 using GoodbyeXAML.LambdaBinding;
                 using System;
                 using System.Collections.Generic;
+                using System.Linq.Expressions;
 
                 namespace Foo
                 {
@@ -131,6 +132,7 @@ namespace CodeGeneratorTests
                 using CodeGeneratorTests;
                 using GoodbyeXAML.LambdaBinding;
                 using System;
+                using System.Linq.Expressions;
 
                 namespace Foo
                 {
