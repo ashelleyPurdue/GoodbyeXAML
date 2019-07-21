@@ -23,7 +23,7 @@ public static class CodeGen
         $@"
             <Project Sdk=""Microsoft.NET.Sdk.WindowsDesktop"">
                 <PropertyGroup>
-                    <OutputType>WinExe</OutputType>
+                    <OutputType>Library</OutputType>
                     <TargetFramework>netcoreapp3.0</TargetFramework>
                     <RootNamespace>{namespaceName}</RootNamespace>
                     <UseWPF>true</UseWPF>
