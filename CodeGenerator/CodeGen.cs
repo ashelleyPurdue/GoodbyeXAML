@@ -231,7 +231,7 @@ public static class CodeGen
         {
             var builder = new StringBuilder();
             var sortedNamespaces = namespaces
-                .OrderBy(s => s);
+                .OrderBy(s => s);   // Sort it alphabetically so the order is deterministic for the unit tests.
 
             foreach (string ns in sortedNamespaces)
                 builder.AppendLine($"using {ns};");

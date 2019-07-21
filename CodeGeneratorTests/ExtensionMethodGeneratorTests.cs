@@ -12,6 +12,7 @@ namespace CodeGeneratorTests
             string expected =
             @"
                 using CodeGeneratorTests;
+                using GoodbyeXAML.LambdaBinding;
                 using System;
                 using System.Collections.Generic;
 
@@ -53,6 +54,61 @@ namespace CodeGeneratorTests
                             obj.DoubleGenericProperty = value;
                             return obj;
                         }
+
+                        public static TObject BindStringProperty<TObject>(this TObject obj, Expression<Func<String>> resultExpression)
+                            where TObject : ClassWithProperties
+                        {
+                            Utils.WhenExpressionChanges(obj, resultExpression, (o, result) =>
+                            {
+                                o.StringProperty = result;
+                            });
+
+                            return obj;
+                        }
+
+                        public static TObject BindIntProperty<TObject>(this TObject obj, Expression<Func<Int32>> resultExpression)
+                            where TObject : ClassWithProperties
+                        {
+                            Utils.WhenExpressionChanges(obj, resultExpression, (o, result) =>
+                            {
+                                o.IntProperty = result;
+                            });
+
+                            return obj;
+                        }
+
+                        public static TObject BindGenericProperty<TObject>(this TObject obj, Expression<Func<List<Int32>>> resultExpression)
+                            where TObject : ClassWithProperties
+                        {
+                            Utils.WhenExpressionChanges(obj, resultExpression, (o, result) =>
+                            {
+                                o.GenericProperty = result;
+                            });
+
+                            return obj;
+                        }
+
+                        public static TObject BindNestedGenericProperty<TObject>(this TObject obj, Expression<Func<List<List<List<Int32>>>>> resultExpression)
+                            where TObject : ClassWithProperties
+                        {
+                            Utils.WhenExpressionChanges(obj, resultExpression, (o, result) =>
+                            {
+                                o.NestedGenericProperty = result;
+                            });
+
+                            return obj;
+                        }
+
+                        public static TObject BindDoubleGenericProperty<TObject>(this TObject obj, Expression<Func<Dictionary<String, Int32>>> resultExpression)
+                            where TObject : ClassWithProperties
+                        {
+                            Utils.WhenExpressionChanges(obj, resultExpression, (o, result) =>
+                            {
+                                o.DoubleGenericProperty = result;
+                            });
+
+                            return obj;
+                        }
                     }
                 }
             ".NormalizeWhitespace();
@@ -73,6 +129,7 @@ namespace CodeGeneratorTests
             string expected =
             @"
                 using CodeGeneratorTests;
+                using GoodbyeXAML.LambdaBinding;
                 using System;
 
                 namespace Foo
