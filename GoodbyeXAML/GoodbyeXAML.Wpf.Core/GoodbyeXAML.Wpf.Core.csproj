@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <RootNamespace>GoodbyeXAML.Wpf.Core</RootNamespace>
+        <UseWPF>true</UseWPF>
+      </PropertyGroup>
+
+    <Import Project="../LambdaBinding/LambdaBinding.projitems" Label="Shared" />
+
+    <Import Project="..\..\GeneratedExtensionMethods\GoodbyeXAML.Wpf.Shared\GoodbyeXAML.Wpf.Shared.projitems" Label="Shared" />
+</Project>

@@ -8,27 +8,17 @@ using CodeGenerator;
 
 public static class CodeGen
 {
-    public static void GenerateWPFDotnetCoreProject(string outputFolder, string projectName, IEnumerable<Type> types)
+    public static void GenerateWPFShProj(string outputFolder, string projectName, IEnumerable<Type> types)
     {
+        const string SHARED_GUID = "38dc387f-0306-4f71-bf34-eb3060308dba";
+
         string projFolder = Path.Combine(outputFolder, projectName);
-        string csprojName = Path.Combine(projFolder, projectName + ".csproj");
-        string nuspecName = Path.Combine(projFolder, projectName + ".nuspec");
+        string shprojName = Path.Combine(projFolder, projectName + ".shproj");
+        string projitemsName = Path.Combine(projFolder, projectName + ".projitems");
 
         GenerateClassFiles(projFolder, projectName, types);
-        File.WriteAllText(csprojName, CsProj.GenerateNetCore(projectName));
-        File.WriteAllText(nuspecName, Nuspec.Generate(projectName));
-    }
-
-    public static void GenerateWPFDotnetFrameworkProject(string outputFolder, string projectName, IEnumerable<Type> types)
-    {
-        // TODO: Refactor this duplicated code.
-        string projFolder = Path.Combine(outputFolder, projectName);
-        string csprojName = Path.Combine(projFolder, projectName + ".csproj");
-        string nuspecName = Path.Combine(projFolder, projectName + ".nuspec");
-
-        GenerateClassFiles(projFolder, projectName, types);
-        File.WriteAllText(csprojName, CsProj.GenerateNetFramework(projectName, types));
-        File.WriteAllText(nuspecName, Nuspec.Generate(projectName));
+        File.WriteAllText(shprojName, CsProj.GenerateShProj(projectName, SHARED_GUID));
+        File.WriteAllText(projitemsName, CsProj.GenerateProjItems(projectName, types, SHARED_GUID));
     }
 
     public static void GenerateClassFiles(string outputFolder, string namespaceName, IEnumerable<Type> types)

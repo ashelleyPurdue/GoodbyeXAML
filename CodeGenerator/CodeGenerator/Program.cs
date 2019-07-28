@@ -18,7 +18,7 @@ namespace CodeGenerator
         static void Main(string[] args)
         {
             AllocConsole();
-            GenerateWPFExtensions("../../../../GeneratedExtensionMethods");
+            GenerateWPFExtensions("../../../../../GeneratedExtensionMethods");
             FreeConsole();
         }
 
@@ -35,8 +35,7 @@ namespace CodeGenerator
                 .Where(t => !t.IsGenericType)
                 .OrderBy(t => t.FullName);
 
-            CodeGen.GenerateWPFDotnetCoreProject(outputFolder, "GoodbyeXAML.Wpf.Core", types);
-            CodeGen.GenerateWPFDotnetFrameworkProject(outputFolder, "GoodbyeXAML.Wpf.Framework", types);
+            CodeGen.GenerateWPFShProj(outputFolder, "GoodbyeXAML.Wpf.Shared", types);
         }
     }
 }
