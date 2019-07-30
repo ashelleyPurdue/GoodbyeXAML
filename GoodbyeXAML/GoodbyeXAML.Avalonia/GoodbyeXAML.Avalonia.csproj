@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.8.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.8.1" />
+  </ItemGroup>
+
+  <Import Project="../../GeneratedExtensionMethods/GoodbyeXAML.Avalonia.Shared/GoodbyeXAML.Avalonia.Shared.projitems" Label="Shared" />
+  <Import Project="../LambdaBinding/LambdaBinding.projitems" Label="Shared" />
+</Project>
