@@ -16,6 +16,14 @@ namespace CodeGeneratorTests
         // Should NOT get extension methods
         public int NoSetter { get; }
         public int PrivateSetter { get; private set; }
-        private int PrivateProperty { get; set; } 
+        private int PrivateProperty { get; set; }
+
+        // Indexers get compiled to a property called "Item".
+        // This "Item" property should NOT be given an extension.
+        public int this[int index]
+        {
+            get => 0;
+            set { }
+        }
     }
 }

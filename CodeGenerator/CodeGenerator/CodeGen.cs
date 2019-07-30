@@ -41,7 +41,8 @@ public static class CodeGen
         var settableProperties = T
             .GetProperties()
             .Where(p => p.DeclaringType == T)   // Skip properties added by parent class
-            .Where(p => p.CanWrite && p.SetMethod.IsPublic);
+            .Where(p => p.CanWrite && p.SetMethod.IsPublic)
+            .Where(p => p.GetIndexParameters().Length == 0);    // Skip indexers
 
         var events = T
             .GetEvents()

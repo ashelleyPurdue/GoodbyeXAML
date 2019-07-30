@@ -177,5 +177,16 @@ namespace CodeGeneratorTests
 
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData("PrivateProperty")]
+        [InlineData("PrivateSetter")]
+        [InlineData("NoSetter")]
+        [InlineData("Item")]    // "Item" is the name of a hidden property that indexers get compiled to.
+        public void Doesnt_Generate_Extensions_For_Private_Properties(string propertyName)
+        {
+            string generatedCode = CodeGen.GenerateExtensionClassFor("dontcare", typeof(ClassWithProperties));
+            Assert.DoesNotContain(propertyName, generatedCode);
+        }
     }
 }
