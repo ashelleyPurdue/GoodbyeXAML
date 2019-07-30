@@ -15,10 +15,12 @@ namespace CodeGenerator
         [DllImport("Kernel32")]
         public static extern void FreeConsole();
 
+        private const string OUTPUT_FOLDER = "../../../../../GeneratedExtensionMethods";
+
         static void Main(string[] args)
         {
             AllocConsole();
-            GenerateWPFExtensions("../../../../../GeneratedExtensionMethods");
+            GenerateWPFExtensions(OUTPUT_FOLDER);
             FreeConsole();
         }
 
@@ -35,7 +37,8 @@ namespace CodeGenerator
                 .Where(t => !t.IsGenericType)
                 .OrderBy(t => t.FullName);
 
-            CodeGen.GenerateWPFShProj(outputFolder, "GoodbyeXAML.Wpf.Shared", types);
+            const string SHARED_GUID = "38dc387f-0306-4f71-bf34-eb3060308dba";
+            CodeGen.GenerateSharedProject(outputFolder, "GoodbyeXAML.Wpf.Shared", SHARED_GUID, types);
         }
     }
 }
