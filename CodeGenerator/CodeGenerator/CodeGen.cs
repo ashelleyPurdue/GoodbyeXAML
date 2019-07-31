@@ -71,32 +71,32 @@ public static class CodeGen
         ";
 
     public static string GenerateProjItems(string namespaceName, IEnumerable<Type> types, string sharedGuid)
+    {
+        return 
+        $@"
+            <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+                <PropertyGroup>
+                    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+                    <HasSharedItems>true</HasSharedItems>
+                    <SharedGUID>{sharedGuid}</SharedGUID>
+                </PropertyGroup>
+                <PropertyGroup Label=""Configuration"">
+                    <Import_RootNamespace>{namespaceName}</Import_RootNamespace>
+                </PropertyGroup>
+                <ItemGroup>
+                    {GenerateCompileIncludes()}
+                </ItemGroup>
+            </Project>
+        ";
+
+        string GenerateCompileIncludes()
         {
-            return 
-            $@"
-                <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
-                    <PropertyGroup>
-                        <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-                        <HasSharedItems>true</HasSharedItems>
-                        <SharedGUID>{sharedGuid}</SharedGUID>
-                    </PropertyGroup>
-                    <PropertyGroup Label=""Configuration"">
-                        <Import_RootNamespace>{namespaceName}</Import_RootNamespace>
-                    </PropertyGroup>
-                    <ItemGroup>
-                        {GenerateCompileIncludes()}
-                    </ItemGroup>
-                </Project>
-            ";
+            var builder = new StringBuilder();
+            foreach (Type t in types)
+                builder.AppendLine($@"<Compile Include=""$(MSBuildThisFileDirectory){t.Name}Extensions.cs"" />");
 
-            string GenerateCompileIncludes()
-            {
-                var builder = new StringBuilder();
-                foreach (Type t in types)
-                    builder.AppendLine($@"<Compile Include=""$(MSBuildThisFileDirectory){t.Name}Extensions.cs"" />");
-
-                return builder.ToString();
-            }
+            return builder.ToString();
         }
+    }
 
 }
