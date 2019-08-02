@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CodeGenerator
 {
@@ -27,22 +25,12 @@ namespace CodeGenerator
                     .ToArray()
             );
 
-            // Add all the arguments.
-            var builder = new StringBuilder();
-            builder.Append(beforeTilde + "<");
+            var commaSeparatedArgs = T.GenericTypeArguments
+                 .Select(a => a.GenericFullName())
+                 .Aggregate("", (c, n) => c + n + ", ")
+                 .TrimEnd(',', ' ');    // Remove that stupid comma at the end.  Don't you LOVE printing lists?
 
-            for (int i = 0; i < T.GenericTypeArguments.Length; i++)
-            {
-                Type genericArg = T.GenericTypeArguments[i];
-
-                if (i != 0)
-                    builder.Append(", ");
-
-                builder.Append(genericArg.GenericFullName());   // Gotta go recursive.  Lookin' at YOU, Mr. IEnumerable<Dictionary<Func<string>, List<int>>>
-            }
-            builder.Append(">");
-
-            return builder.ToString();
+            return $"{beforeTilde}<{commaSeparatedArgs}>";
         }
     }
 }
