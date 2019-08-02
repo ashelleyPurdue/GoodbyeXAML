@@ -90,7 +90,7 @@ namespace CodeGeneratorTests
         [InlineData("Item")]    // "Item" is the name of a hidden property that indexers get compiled to.
         public void Doesnt_Generate_Extensions_For_Private_Properties(string propertyName)
         {
-            string generatedCode = CodeGen.GenerateExtensionClassFor("dontcare", typeof(ClassWithProperties));
+            string generatedCode = ClassGenerator.Generate("dontcare", typeof(ClassWithProperties));
             Assert.DoesNotContain(propertyName, generatedCode);
         }
     }

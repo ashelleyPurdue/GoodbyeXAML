@@ -6,65 +6,39 @@ using System.Text;
 
 namespace CodeGenerator
 {
-    public class ClassGenerator
+    public static class ClassGenerator
     {
         const string EXPRESSION = "global::System.Linq.Expressions.Expression";
         const string FUNC = "global::System.Func";
 
-        private string namespaceName;
-
-        private List<PropertyInfo> properties = new List<PropertyInfo>();
-        private List<EventInfo> events = new List<EventInfo>();
-        private string className;
-
-        /// <summary>
-        /// </summary>
-        /// <param name="namespaceName">The namespace of the generated class</param>
-        /// <param name="targetType">The type we are generating extension methods for</param>
-        public ClassGenerator(string namespaceName, Type targetType)
-        {
-            this.namespaceName = namespaceName;
-            this.className = targetType.Name + "Extensions";
-        }
-
-        public void AddProperty(PropertyInfo p)
-        {
-            properties.Add(p);
-        }
-
-        public void AddEvent(EventInfo e)
-        {
-            events.Add(e);
-        }
-
-        public string Generate() =>
+        public static string Generate(string namespaceName, Type targetType) =>
         $@"
             namespace {namespaceName}
             {{
-                public static class {className}
+                public static class {targetType.Name}Extensions
                 {{
-                    {ClassBody()}
+                    {ClassBody(targetType)}
                 }}
             }}
         ";
 
-        private string ClassBody()
+        private static string ClassBody(Type T)
         {
-            var builder = new StringBuilder();
+            var settableProperties = T
+                .GetProperties()
+                .Where(p => p.DeclaringType == T)   // Skip properties added by parent class
+                .Where(p => p.CanWrite && p.SetMethod.IsPublic)
+                .Where(p => p.GetIndexParameters().Length == 0);    // Skip indexers
 
-            // With extensions
-            foreach (PropertyInfo p in properties)
-                builder.AppendLine(SingleWith(p));
+            var events = T
+                .GetEvents()
+                .Where(e => e.DeclaringType == T);
 
-            // Bind extensions
-            foreach (PropertyInfo p in properties)
-                builder.AppendLine(SingleBind(p));
-
-            // Handle extensions
-            foreach (EventInfo e in events)
-                builder.AppendLine(SingleHandle(e));
-
-            return builder.ToString();
+            return new string[0]
+                .Concat(settableProperties.Select(SingleWith))
+                .Concat(settableProperties.Select(SingleBind))
+                .Concat(events.Select(SingleHandle))
+                .Aggregate("", (current, next) => current + next + '\n');
         }
 
         public static string SingleWith(PropertyInfo p) =>
