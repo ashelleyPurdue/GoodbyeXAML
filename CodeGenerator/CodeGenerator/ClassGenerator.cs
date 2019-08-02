@@ -28,7 +28,8 @@ namespace CodeGenerator
             (
                 "GoodbyeXAML.LambdaBinding",
                 "System.Linq.Expressions",
-                "System"
+                "System",
+                targetType.Namespace
             );
         }
 
