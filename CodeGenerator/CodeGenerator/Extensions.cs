@@ -7,10 +7,14 @@ namespace CodeGenerator
 {
     public static class Extensions
     {
-        public static string GenericName(this Type T)
+        public static string GenericFullName(this Type T)
         {
+            string fullName = T.FullName;
+            fullName = fullName.Replace('+', '.');     // Undo the mangling of nested types
+            fullName = "global::" + fullName;          // Prevent edge cases where the current namespace is the same as one of GoodbyeXAML's namespaces.
+
             if (!T.IsGenericType)
-                return T.Name;
+                return fullName;
 
             // The compiler mangles T's name to something like EventHandler`1.
             // We need to turn it back into something like EventHandler<Object>.
@@ -18,7 +22,7 @@ namespace CodeGenerator
             // Chop off the stuff after the tilde.
             string beforeTilde = new string
             (
-                T.Name
+                fullName
                     .TakeWhile(c => c != '`')
                     .ToArray()
             );
@@ -34,7 +38,7 @@ namespace CodeGenerator
                 if (i != 0)
                     builder.Append(", ");
 
-                builder.Append(genericArg.GenericName());   // Lookin' at YOU, Mr. IEnumerable<Dictionary<Func<string>, List<int>>>
+                builder.Append(genericArg.GenericFullName());   // Gotta go recursive.  Lookin' at YOU, Mr. IEnumerable<Dictionary<Func<string>, List<int>>>
             }
             builder.Append(">");
 

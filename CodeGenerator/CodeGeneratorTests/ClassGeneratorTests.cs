@@ -3,38 +3,12 @@ using System.Linq;
 using System.Reflection;
 using Xunit;
 using CodeGenerator;
+using static CodeGeneratorTests.FullNames;
 
 namespace CodeGeneratorTests
 {
     public class ClassGeneratorTests
     {
-        [Fact]
-        public void Generates_Usings()
-        {
-            Type T = typeof(ClassWithExtraUsings);
-
-            var properties = T.GetProperties();
-            var generator = new ClassGenerator("CodeGeneratorTests", typeof(ClassWithExtraUsings));
-
-            foreach (PropertyInfo p in properties)
-                generator.AddProperty(p);
-
-            string expected =
-            @"
-                using CodeGeneratorTests;
-                using GoodbyeXAML.LambdaBinding;
-                using System;
-                using System.Collections.Generic;
-                using System.ComponentModel;
-                using System.Linq.Expressions;
-            ".NormalizeWhitespace();
-
-            string actual = generator
-                .UsingsSection()
-                .NormalizeWhitespace();
-
-            Assert.Equal(expected, actual);
-        }
 
         [Fact]
         public void Generates_WithIntProperty()
@@ -43,82 +17,13 @@ namespace CodeGeneratorTests
                 .GetProperty("IntProperty");
 
             string expected =
-            @"
-                public static TObject WithIntProperty<TObject>(this TObject obj, Int32 value)
-                    where TObject : ClassWithProperties
-                {
+            @$"
+                public static TObject WithIntProperty<TObject>(this TObject obj, {INT32} value)
+                    where TObject : {CLASS_WITH_PROPERTIES}
+                {{
                     obj.IntProperty = value;
                     return obj;
-                }
-            ".NormalizeWhitespace();
-
-            string actual = ClassGenerator
-                .SingleWith(p)
-                .NormalizeWhitespace();
-
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public void Generates_WithGenericProperty()
-        {
-            PropertyInfo p = typeof(ClassWithProperties)
-                .GetProperty("GenericProperty");
-
-            string expected =
-            @"
-                public static TObject WithGenericProperty<TObject>(this TObject obj, List<Int32> value)
-                    where TObject : ClassWithProperties
-                {
-                    obj.GenericProperty = value;
-                    return obj;
-                }
-            ".NormalizeWhitespace();
-
-            string actual = ClassGenerator
-                .SingleWith(p)
-                .NormalizeWhitespace();
-
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public void Generates_WithNestedGenericProperty()
-        {
-            PropertyInfo p = typeof(ClassWithProperties)
-                .GetProperty("NestedGenericProperty");
-
-            string expected =
-            @"
-                public static TObject WithNestedGenericProperty<TObject>(this TObject obj, List<List<List<Int32>>> value)
-                    where TObject : ClassWithProperties
-                {
-                    obj.NestedGenericProperty = value;
-                    return obj;
-                }
-            ".NormalizeWhitespace();
-
-            string actual = ClassGenerator
-                .SingleWith(p)
-                .NormalizeWhitespace();
-
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public void Generates_WithDoubleGenericProperty()
-        {
-            PropertyInfo p = typeof(ClassWithProperties)
-                .GetProperty("DoubleGenericProperty");
-
-            string expected =
-            @"
-                public static TObject WithDoubleGenericProperty<TObject>(this TObject obj, Dictionary<String, Int32> value)
-                    where TObject : ClassWithProperties
-                {
-                    obj.DoubleGenericProperty = value;
-                    return obj;
-                }
+                }}
             ".NormalizeWhitespace();
 
             string actual = ClassGenerator
@@ -135,17 +40,17 @@ namespace CodeGeneratorTests
                 .GetProperty("IntProperty");
 
             string expected =
-            @"
-                public static TObject BindIntProperty<TObject>(this TObject obj, Expression<Func<Int32>> resultExpression)
-                    where TObject : ClassWithProperties
-                {
-                    Utils.WhenExpressionChanges(obj, resultExpression, (o, result) =>
-                    {
+            @$"
+                public static TObject BindIntProperty<TObject>(this TObject obj, {EXPRESSION}<{FUNC}<{INT32}>> resultExpression)
+                    where TObject : {CLASS_WITH_PROPERTIES}
+                {{
+                    GoodbyeXAML.LambdaBinding.Utils.WhenExpressionChanges(obj, resultExpression, (o, result) =>
+                    {{
                         o.IntProperty = result;
-                    });
+                    }});
 
                     return obj;
-                }
+                }}
             ".NormalizeWhitespace();
 
             string actual = ClassGenerator
@@ -162,13 +67,13 @@ namespace CodeGeneratorTests
                 .GetEvent("ObjEvent");
 
             string expected =
-            @"
-                public static TObject HandleObjEvent<TObject>(this TObject obj, EventHandler<Object> handler)
-                    where TObject : ClassWithEvents
-                {
+            @$"
+                public static TObject HandleObjEvent<TObject>(this TObject obj, {EVENT_HANDLER}<{OBJECT}> handler)
+                    where TObject : {CLASS_WITH_EVENTS}
+                {{
                     obj.ObjEvent += handler;
                     return obj;
-                }
+                }}
             ".NormalizeWhitespace();
 
             string actual = ClassGenerator
