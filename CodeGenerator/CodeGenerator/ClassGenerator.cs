@@ -15,10 +15,14 @@ namespace CodeGenerator
         private List<EventInfo> events = new List<EventInfo>();
         private string className;
 
-        public ClassGenerator(string namespaceName, string className)
+        /// <summary>
+        /// </summary>
+        /// <param name="namespaceName">The namespace of the generated class</param>
+        /// <param name="targetType">The type we are generating extension methods for</param>
+        public ClassGenerator(string namespaceName, Type targetType)
         {
             this.namespaceName = namespaceName;
-            this.className = className;
+            this.className = targetType.Name + "Extensions";
 
             namespaces.AddRange
             (

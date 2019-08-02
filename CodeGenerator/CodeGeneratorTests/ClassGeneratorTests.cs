@@ -14,7 +14,7 @@ namespace CodeGeneratorTests
             Type T = typeof(ClassWithExtraUsings);
 
             var properties = T.GetProperties();
-            var generator = new ClassGenerator("CodeGeneratorTests", "ClassWithExtraUsingsExtensions");
+            var generator = new ClassGenerator("CodeGeneratorTests", typeof(ClassWithExtraUsings));
 
             foreach (PropertyInfo p in properties)
                 generator.AddProperty(p);

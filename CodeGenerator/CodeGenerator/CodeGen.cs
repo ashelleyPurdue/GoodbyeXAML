@@ -66,7 +66,7 @@ public static class CodeGen
             .GetEvents()
             .Where(e => e.DeclaringType == T);
 
-        var generator = new ClassGenerator(namespaceName, T.Name + "Extensions");
+        var generator = new ClassGenerator(namespaceName, T);
 
         foreach (PropertyInfo p in settableProperties)
             generator.AddProperty(p);
