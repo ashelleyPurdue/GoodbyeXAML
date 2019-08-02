@@ -31,7 +31,7 @@ public static class CodeGen
 
         GenerateClassFiles(projFolder, projectName, derivedTypes);
         File.WriteAllText(shprojName, GenerateShProj(projectName, sharedGuid));
-        File.WriteAllText(projitemsName, GenerateProjItems(projectName, types, sharedGuid));
+        File.WriteAllText(projitemsName, GenerateProjItems(projectName, derivedTypes, sharedGuid));
     }
 
     public static IEnumerable<Type> GetDerivedTypes(Type type) => type
