@@ -28,6 +28,17 @@ namespace CodeGenerator
                 "38dc387f-0306-4f71-bf34-eb3060308dba",
                 typeof(FrameworkElement)
             );
+
+            CodeGen.GenerateSharedProject
+            (
+                OUTPUT_FOLDER,
+                "GoodbyeXAML.Avalonia.Shared",
+                "87ce4651-9057-4725-9b56-65b177d6dfa9",
+                typeof(Avalonia.AvaloniaObject),
+                typeof(Avalonia.Controls.Control),
+                typeof(Avalonia.Layout.Layoutable)
+            );
+
             FreeConsole();
         }
     }
