@@ -10,9 +10,9 @@ namespace GoodbyeXAML.Avalonia.Sample
     public static class ControlFactories
     {
         public static TextBlock Text(string text) => new TextBlock()
-            .WithText(text);
+            ._Text(text);
 
         public static TextBlock Text(Expression<Func<string>> textBinding) => new TextBlock()
-            .BindText(textBinding);
+            ._Text(textBinding);
     }
 }

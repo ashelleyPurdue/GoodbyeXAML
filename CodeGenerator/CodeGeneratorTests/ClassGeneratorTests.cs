@@ -18,7 +18,7 @@ namespace CodeGeneratorTests
 
             string expected =
             @$"
-                public static TObject WithIntProperty<TObject>(this TObject obj, {INT32} value)
+                public static TObject _IntProperty<TObject>(this TObject obj, {INT32} value)
                     where TObject : {CLASS_WITH_PROPERTIES}
                 {{
                     obj.IntProperty = value;
@@ -27,7 +27,7 @@ namespace CodeGeneratorTests
             ".NormalizeWhitespace();
 
             string actual = ClassGenerator
-                .SingleWith(p)
+                .SingleSet(p)
                 .NormalizeWhitespace();
 
             Assert.Equal(expected, actual);
@@ -41,7 +41,7 @@ namespace CodeGeneratorTests
 
             string expected =
             @$"
-                public static TObject BindIntProperty<TObject>(this TObject obj, {EXPRESSION}<{FUNC}<{INT32}>> resultExpression)
+                public static TObject _IntProperty<TObject>(this TObject obj, {EXPRESSION}<{FUNC}<{INT32}>> resultExpression)
                     where TObject : {CLASS_WITH_PROPERTIES}
                 {{
                     GoodbyeXAML.LambdaBinding.Utils.WhenExpressionChanges(obj, resultExpression, (o, result) =>
@@ -68,7 +68,7 @@ namespace CodeGeneratorTests
 
             string expected =
             @$"
-                public static TObject HandleObjEvent<TObject>(this TObject obj, {EVENT_HANDLER}<{OBJECT}> handler)
+                public static TObject _ObjEvent<TObject>(this TObject obj, {EVENT_HANDLER}<{OBJECT}> handler)
                     where TObject : {CLASS_WITH_EVENTS}
                 {{
                     obj.ObjEvent += handler;
@@ -91,7 +91,7 @@ namespace CodeGeneratorTests
         public void Doesnt_Generate_Extensions_For_Private_Properties(string propertyName)
         {
             string generatedCode = ClassGenerator.Generate("dontcare", typeof(ClassWithProperties));
-            Assert.DoesNotContain(propertyName, generatedCode);
+            Assert.DoesNotContain("_" + propertyName, generatedCode);
         }
     }
 }

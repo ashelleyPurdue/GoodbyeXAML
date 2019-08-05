@@ -35,15 +35,15 @@ namespace CodeGenerator
                 .Where(e => e.DeclaringType == T);
 
             return new string[0]
-                .Concat(settableProperties.Select(SingleWith))
+                .Concat(settableProperties.Select(SingleSet))
                 .Concat(settableProperties.Select(SingleBind))
                 .Concat(events.Select(SingleHandle))
                 .Aggregate("", (current, next) => current + next + '\n');
         }
 
-        public static string SingleWith(PropertyInfo p) =>
+        public static string SingleSet(PropertyInfo p) =>
         $@"
-            public static {FunctionSignature($"With{p.Name}", p.PropertyType.GenericFullName(), "value", p.DeclaringType)}
+            public static {FunctionSignature($"_{p.Name}", p.PropertyType.GenericFullName(), "value", p.DeclaringType)}
             {{
                 obj.{p.Name} = value;
                 return obj;
@@ -52,7 +52,7 @@ namespace CodeGenerator
 
         public static string SingleBind(PropertyInfo p) =>
         $@"
-            public static {FunctionSignature($"Bind{p.Name}", $"{EXPRESSION}<{FUNC}<{p.PropertyType.GenericFullName()}>>", "resultExpression", p.DeclaringType)}
+            public static {FunctionSignature($"_{p.Name}", $"{EXPRESSION}<{FUNC}<{p.PropertyType.GenericFullName()}>>", "resultExpression", p.DeclaringType)}
             {{
                 GoodbyeXAML.LambdaBinding.Utils.WhenExpressionChanges(obj, resultExpression, (o, result) =>
                 {{
@@ -65,7 +65,7 @@ namespace CodeGenerator
 
         public static string SingleHandle(EventInfo e) =>
         $@"
-            public static {FunctionSignature($"Handle{e.Name}", e.EventHandlerType.GenericFullName(), "handler", e.DeclaringType)}
+            public static {FunctionSignature($"_{e.Name}", e.EventHandlerType.GenericFullName(), "handler", e.DeclaringType)}
             {{
                 obj.{e.Name} += handler;
                 return obj;

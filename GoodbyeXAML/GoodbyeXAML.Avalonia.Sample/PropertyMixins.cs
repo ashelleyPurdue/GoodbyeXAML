@@ -16,8 +16,8 @@ namespace GoodbyeXAML.Avalonia.Sample
             VerticalAlignment vert = VerticalAlignment.Center,
             double margin = 8
         ) where TLayoutable : Layoutable => obj
-            .WithHorizontalAlignment(hor)
-            .WithVerticalAlignment(vert)
-            .WithMargin(new Thickness(margin));
+            ._HorizontalAlignment(hor)
+            ._VerticalAlignment(vert)
+            ._Margin(new Thickness(margin));
     }
 }

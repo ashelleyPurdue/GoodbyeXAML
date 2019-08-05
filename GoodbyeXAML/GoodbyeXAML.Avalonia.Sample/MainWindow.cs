@@ -18,25 +18,25 @@ public class MainWindow : Window
 
     private void InitializeComponent()
     {
-        Content = new Panel().WithChildren
+        Content = new Panel()._Children
         (
             LetterCountForm()
-                .WithHorizontalAlignment(HorizontalAlignment.Center)
-                .WithVerticalAlignment(VerticalAlignment.Top),
+                ._HorizontalAlignment(HorizontalAlignment.Center)
+                ._VerticalAlignment(VerticalAlignment.Top),
 
             new Button()
                 .OnWindowEdge(hor: HorizontalAlignment.Right, vert: VerticalAlignment.Bottom)
-                .WithContent("Click Me!")
-                .HandleClick((s, e) => ShowMessage("You can handle events inline using lambdas."))
+                ._Content("Click Me!")
+                ._Click((s, e) => ShowMessage("You can handle events inline using lambdas."))
         );
     }
 
     private StackPanel LetterCountForm()
     {
         var letterCountTextbox = new TextBox()
-            .WithText("The letter count in this textbox is updated using lambda bindings.");
+            ._Text("The letter count in this textbox is updated using lambda bindings.");
 
-        return new StackPanel().WithChildren
+        return new StackPanel()._Children
         (
             Text("You can bind properties to lambda expressions."),
             letterCountTextbox,
@@ -50,17 +50,17 @@ public class MainWindow : Window
                                         // use it in the button's HandleClick closure.
 
         dialog
-            .WithSizeToContent(SizeToContent.WidthAndHeight)
-            .WithMinHeight(70)
-            .WithContent(new Panel().WithChildren
+            ._SizeToContent(SizeToContent.WidthAndHeight)
+            ._MinHeight(70)
+            ._Content(new Panel()._Children
         (
             Text(message)
                 .OnWindowEdge(vert: VerticalAlignment.Top),
 
             new Button()
                 .OnWindowEdge(vert: VerticalAlignment.Bottom)
-                .WithContent("OK")
-                .HandleClick((s, e) => dialog.Close())
+                ._Content("OK")
+                ._Click((s, e) => dialog.Close())
         ));
         
         dialog.Show();
