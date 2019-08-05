@@ -38,9 +38,9 @@ public class MainWindow : Window
 
         return new StackPanel()._Children
         (
-            Text("You can bind properties to lambda expressions."),
+            Label("You can bind properties to lambda expressions."),
             letterCountTextbox,
-            Text(() => $"There are {letterCountTextbox.Text.Length} letters in that sentence.")
+            Label(() => $"There are {letterCountTextbox.Text.Length} letters in that sentence.")
         );
     }
 
@@ -54,7 +54,7 @@ public class MainWindow : Window
             ._MinHeight(70)
             ._Content(new Panel()._Children
         (
-            Text(message)
+            Label(message)
                 .OnWindowEdge(vert: VerticalAlignment.Top),
 
             new Button()
