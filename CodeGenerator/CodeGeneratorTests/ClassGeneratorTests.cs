@@ -83,6 +83,30 @@ namespace CodeGeneratorTests
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public void Generates_AddItem_Extensions_For_ILists()
+        {
+            PropertyInfo p = typeof(ClassWithProperties)
+                .GetProperty("ReadOnlyList");
+
+            string expected =
+            $@"
+                public static TObject _ReadOnlyList<TObject>(this TObject obj, params {INT32}[] items)
+                    where TObject : {CLASS_WITH_PROPERTIES}
+                {{
+                    foreach (var i in items)
+                        obj.ReadOnlyList.Add(i);
+                    return obj;
+                }}
+            ".NormalizeWhitespace();
+
+            string actual = ClassGenerator
+                .SingleListAdd(p)
+                .NormalizeWhitespace();
+
+            Assert.Equal(expected, actual);
+        }
+
         [Theory]
         [InlineData("PrivateProperty")]
         [InlineData("PrivateSetter")]

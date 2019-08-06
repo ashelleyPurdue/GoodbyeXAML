@@ -24,11 +24,17 @@ namespace CodeGenerator
 
         private static string ClassBody(Type T)
         {
-            var settableProperties = T
+            var properties = T
                 .GetProperties()
                 .Where(p => p.DeclaringType == T)   // Skip properties added by parent class
-                .Where(p => p.CanWrite && p.SetMethod.IsPublic)
                 .Where(p => p.GetIndexParameters().Length == 0);    // Skip indexers
+
+
+            var settableProperties = properties
+                .Where(p => p.CanWrite && p.SetMethod.IsPublic);
+
+            var iListProperties = properties    // Get all properties that implement IList<something>
+                .Where(p => GetIListType(p.PropertyType) != null);
 
             var events = T
                 .GetEvents()
@@ -37,6 +43,7 @@ namespace CodeGenerator
             return new string[0]
                 .Concat(settableProperties.Select(SingleSet))
                 .Concat(settableProperties.Select(SingleBind))
+                .Concat(iListProperties.Select(SingleListAdd))
                 .Concat(events.Select(SingleHandle))
                 .Aggregate("", (current, next) => current + next + '\n');
         }
@@ -71,6 +78,46 @@ namespace CodeGenerator
                 return obj;
             }}
         ";
+
+        /// <summary>
+        /// Gets the generic version of IList<something> that T implements.
+        /// If it doens't implement something deriving from IList<something>,
+        /// returns null.
+        /// </summary>
+        /// <param name="T"></param>
+        /// <returns></returns>
+        private static Type GetIListType(Type T)
+        {
+            Type iList = typeof(IList<int>)
+                .GetGenericTypeDefinition();
+
+            if (T.IsGenericType && T.GetGenericTypeDefinition() == iList)
+                return T;
+
+            return T
+                .GetInterfaces()
+                .Select(GetIListType)
+                .FirstOrDefault(i => i != null);
+        }
+
+        public static string SingleListAdd(PropertyInfo p)
+        {
+            // Get the name of 'T' in IList<T>
+            string genericTypeParam = GetIListType(p.PropertyType)
+                .GetGenericArguments()
+                .First()
+                .GenericFullName();
+
+            return
+            $@"
+                public static {FunctionSignature($"_{p.Name}", $"params {genericTypeParam}[]", "items", p.DeclaringType)}
+                {{
+                    foreach (var i in items)
+                        obj.{p.Name}.Add(i);
+                    return obj;
+                }}
+            ";
+        }
 
         public static string FunctionSignature(string funcName, string paramType, string paramName, Type T) => IsValidGenericConstraint(T)
             ? $"TObject {funcName}<TObject>(this TObject obj, {paramType} {paramName}) where TObject : {T.GenericFullName()}"
