@@ -9,6 +9,31 @@ namespace CodeGeneratorTests
 {
     public class ClassGeneratorTests
     {
+        private void ExpectGeneratedClassContainsExtension<TMemberInfo>
+        (
+            Type targetType,
+            Func<Type, string, BindingFlags, TMemberInfo> memberGetter,
+            Func<TMemberInfo, string> extensionGenerator,
+            string memberName,
+            bool shouldContain = true
+        )
+        {
+            var bindingFlags =
+                BindingFlags.Public |
+                BindingFlags.NonPublic |
+                BindingFlags.Instance;
+
+            TMemberInfo memberInfo = memberGetter(targetType, memberName, bindingFlags);
+
+            string expectedMethod = extensionGenerator(memberInfo)
+                .NormalizeWhitespace();
+
+            string generatedClass = ClassGenerator
+                .Generate("dontcare", targetType)
+                .NormalizeWhitespace();
+
+            Assert.Equal(generatedClass.Contains(expectedMethod), shouldContain);
+        }
 
         [Fact]
         public void Generates_WithIntProperty()
@@ -83,6 +108,73 @@ namespace CodeGeneratorTests
             Assert.Equal(expected, actual);
         }
 
+        [Theory]
+        [InlineData("IntProperty")]
+        [InlineData("StringProperty")]
+        [InlineData("GenericProperty")]
+        [InlineData("ReadOnlyList", false)]
+        [InlineData("PrivateProperty", false)]
+        [InlineData("PrivateSetter", false)]
+        [InlineData("NoSetter", false)]
+        [InlineData("Item", false)]     // "Item" is the name of a hidden property that indexers get compiled to.
+        public void Generates_Setter_Extensions_For(string propertyName, bool shouldGenerate = true) =>
+            ExpectGeneratedClassContainsExtension
+            (
+                typeof(ClassWithProperties),
+                (T, name, flags) => T.GetProperty(name, flags),
+                ClassGenerator.SingleSet,
+                propertyName,
+                shouldGenerate
+            );
+
+        [Theory]
+        [InlineData("IntProperty")]
+        [InlineData("StringProperty")]
+        [InlineData("GenericProperty")]
+        [InlineData("ReadOnlyList", false)]
+        [InlineData("PrivateProperty", false)]
+        [InlineData("PrivateSetter", false)]
+        [InlineData("NoSetter", false)]
+        [InlineData("Item", false)]     // "Item" is the name of a hidden property that indexers get compiled to.
+        public void Generates_Binding_Extensions_For(string propertyName, bool shouldGenerate = true) =>
+            ExpectGeneratedClassContainsExtension
+            (
+                typeof(ClassWithProperties),
+                (T, name, flags) => T.GetProperty(name, flags),
+                ClassGenerator.SingleBind,
+                propertyName,
+                shouldGenerate
+            );
+
+        [Theory]
+        [InlineData("ObjEvent")]
+        [InlineData("ActionEvent")]
+        [InlineData("LocalDelegateEvent")]
+        [InlineData("PrivateEvent", false)]
+        [InlineData("ProtectedEvent", false)]
+        public void Generates_Event_Extensions_For(string eventName, bool shouldGenerate = true) =>
+            ExpectGeneratedClassContainsExtension
+            (
+                typeof(ClassWithEvents),
+                (T, name, flags) => T.GetEvent(name, flags),
+                ClassGenerator.SingleHandle,
+                eventName,
+                shouldGenerate
+            );
+
+        [Theory]
+        [InlineData("ReadOnlyList")]
+        [InlineData("DirectIList")]
+        public void Generates_IList_Extensions_For(string propertyName, bool shouldGenerate = true) =>
+            ExpectGeneratedClassContainsExtension
+            (
+                typeof(ClassWithProperties),
+                (T, name, flags) => T.GetProperty(name, flags),
+                ClassGenerator.SingleListAdd,
+                propertyName,
+                shouldGenerate
+            );
+
         [Fact]
         public void Generates_AddItem_Extensions_For_ILists()
         {
@@ -105,17 +197,6 @@ namespace CodeGeneratorTests
                 .NormalizeWhitespace();
 
             Assert.Equal(expected, actual);
-        }
-
-        [Theory]
-        [InlineData("PrivateProperty")]
-        [InlineData("PrivateSetter")]
-        [InlineData("NoSetter")]
-        [InlineData("Item")]    // "Item" is the name of a hidden property that indexers get compiled to.
-        public void Doesnt_Generate_Extensions_For_Private_Properties(string propertyName)
-        {
-            string generatedCode = ClassGenerator.Generate("dontcare", typeof(ClassWithProperties));
-            Assert.DoesNotContain("_" + propertyName, generatedCode);
         }
     }
 }

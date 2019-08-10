@@ -13,8 +13,9 @@ namespace CodeGeneratorTests
         public List<List<List<int>>> NestedGenericProperty { get; set; }
         public Dictionary<string, int> DoubleGenericProperty { get; set; }
 
-        // Should only get an extenion method for adding items
+        // Should get extension methods for adding items
         public List<int> ReadOnlyList { get; private set; }
+        public IList<int> DirectIList { get; set; }
 
         // Should NOT get extension methods
         public int NoSetter { get; }
