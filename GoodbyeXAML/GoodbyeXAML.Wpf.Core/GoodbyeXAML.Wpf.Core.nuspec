@@ -5,7 +5,7 @@
         <title>GoodbyeXAML.Wpf.Core</title>
         <authors>Alex Shelley</authors>
         <owners>Alex Shelley</owners>
-        <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+        <license type="expression">MIT</license>
         <projectUrl>https://github.com/ashelleyPurdue/GoodbyeXAML</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>foo description</description>
