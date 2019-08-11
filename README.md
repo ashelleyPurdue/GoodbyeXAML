@@ -1,3 +1,9 @@
+# Installing
+Add one of the following nuget packages to your project:
+* `GoodbyeXAML.Wpf.Framework` for the WPF .Net Framework version
+* `GoodbyeXAML.Wpf.Core` for the WPF .Net Core version
+* `GoodbyeXAML.Avalonia` for the Avalonia version
+
 # What is GoodbyeXAML?
 
 GoodbyeXAML is a collection of extension methods that lets helps you lay out WPF
