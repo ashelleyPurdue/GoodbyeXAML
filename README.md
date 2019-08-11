@@ -133,7 +133,7 @@ Or maybe we don't want them to be TextBlocks after all-- maybe we want them
 to be buttons!  Why?  Because I said so, that's why!
 
 ```C#
-public static TextBlock Label(string text) => new Button()
+public static Button Label(string text) => new Button()
     ._Content(text)
     ._Click((s, e) => MessageBox.Show(text))
 ```
@@ -147,7 +147,7 @@ Of course, you can still use a delegate instead of a lambda expression, just lik
 you would in XAML:
 
 ```C#
-public static TextBlock Label(string text) => new Button()
+public static Button Label(string text) => new Button()
     ._Content(text)
     ._Click(Label_Click)
 
