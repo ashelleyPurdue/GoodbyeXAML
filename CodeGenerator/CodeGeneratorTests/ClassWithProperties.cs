@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace CodeGeneratorTests
 {
@@ -14,8 +15,11 @@ namespace CodeGeneratorTests
         public Dictionary<string, int> DoubleGenericProperty { get; set; }
 
         // Should get extension methods for adding items
-        public List<int> ReadOnlyList { get; private set; }
+        public List<int> NonSettableList { get; private set; }
         public IList<int> DirectIList { get; set; }
+
+        // Should NOT get extension methods for adding items
+        public ReadOnlyCollection<int> ReadOnlyCollection { get; set; }
 
         // Should NOT get extension methods
         public int NoSetter { get; }

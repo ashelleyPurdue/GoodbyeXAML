@@ -112,7 +112,7 @@ namespace CodeGeneratorTests
         [InlineData("IntProperty")]
         [InlineData("StringProperty")]
         [InlineData("GenericProperty")]
-        [InlineData("ReadOnlyList", false)]
+        [InlineData("NonSettableList", false)]
         [InlineData("PrivateProperty", false)]
         [InlineData("PrivateSetter", false)]
         [InlineData("NoSetter", false)]
@@ -131,7 +131,7 @@ namespace CodeGeneratorTests
         [InlineData("IntProperty")]
         [InlineData("StringProperty")]
         [InlineData("GenericProperty")]
-        [InlineData("ReadOnlyList", false)]
+        [InlineData("NonSettableList", false)]
         [InlineData("PrivateProperty", false)]
         [InlineData("PrivateSetter", false)]
         [InlineData("NoSetter", false)]
@@ -163,8 +163,9 @@ namespace CodeGeneratorTests
             );
 
         [Theory]
-        [InlineData("ReadOnlyList")]
+        [InlineData("NonSettableList")]
         [InlineData("DirectIList")]
+        [InlineData("ReadOnlyCollection", false)]
         public void Generates_IList_Extensions_For(string propertyName, bool shouldGenerate = true) =>
             ExpectGeneratedClassContainsExtension
             (
@@ -179,15 +180,15 @@ namespace CodeGeneratorTests
         public void Generates_AddItem_Extensions_For_ILists()
         {
             PropertyInfo p = typeof(ClassWithProperties)
-                .GetProperty("ReadOnlyList");
+                .GetProperty("NonSettableList");
 
             string expected =
             $@"
-                public static TObject _ReadOnlyList<TObject>(this TObject obj, params {INT32}[] items)
+                public static TObject _NonSettableList<TObject>(this TObject obj, params {INT32}[] items)
                     where TObject : {CLASS_WITH_PROPERTIES}
                 {{
                     foreach (var i in items)
-                        obj.ReadOnlyList.Add(i);
+                        obj.NonSettableList.Add(i);
                     return obj;
                 }}
             ".NormalizeWhitespace();

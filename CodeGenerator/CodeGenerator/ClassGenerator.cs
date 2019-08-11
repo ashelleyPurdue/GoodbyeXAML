@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -34,7 +35,10 @@ namespace CodeGenerator
                 .Where(p => p.CanWrite && p.SetMethod.IsPublic);
 
             var iListProperties = properties    // Get all properties that implement IList<something>
-                .Where(p => GetIListType(p.PropertyType) != null);
+                .Where(p => GetIListType(p.PropertyType) != null)
+                .Where(p => !IsReadOnlyCollection(p.PropertyType));    // HACK: Exclude ReadOnlyCollection
+                                                                       // For some reason it implements IList,
+                                                                       // even though it can't be added to -.-
 
             var events = T
                 .GetEvents()
@@ -46,6 +50,18 @@ namespace CodeGenerator
                 .Concat(iListProperties.Select(SingleListAdd))
                 .Concat(events.Select(SingleHandle))
                 .Aggregate("", (current, next) => current + next + '\n');
+
+            bool IsReadOnlyCollection(Type T)
+            {
+                if (T == null)
+                    return false;
+
+                Type readOnlyCollectionDef = typeof(ReadOnlyCollection<int>).GetGenericTypeDefinition();
+                if (T.IsGenericType && T.GetGenericTypeDefinition() == readOnlyCollectionDef)
+                    return true;
+
+                return IsReadOnlyCollection(T.BaseType);
+            }
         }
 
         public static string SingleSet(PropertyInfo p) =>
