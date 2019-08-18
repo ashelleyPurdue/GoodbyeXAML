@@ -165,7 +165,64 @@ XAML!
 
 
 # Lambda binding
-TODO: Explain what lambda binding is, and how cool it is.
+GoodbyeXAML includes a feature I call "lambda binding."  Essentially, it lets
+you bind a property to the result of a lambda expression.
+
+```C#
+    public static StackPanel PokemonStatsView(PokemonViewModel vm) =>
+        new StackPanel()
+            ._Orientation(Orientation.Vertical)
+            ._Children
+            (
+                new TextBlock()._Text(() => vm.SpeciesName.ToUpper())
+                new TextBlock()._Text(() => $"Level {vm.Level}"),
+                new TextBlock()._Text(() => vm.IsMale
+                    ? "Male"
+                    : "Female"),
+                })
+            );
+```
+
+If you pass a parameterless lambda expression instead of a value, the property
+will be bound to the result of that lambda expression.  The property will
+automatically update whenever expression changes.
+
+Under the hood, it does this by converting the lambda expression to an Expression
+Tree, and then searching it to find any references to a class implementing
+`INotifyPropertyChanged`.  It will then subscribe(using a weak event pattern) to
+the relevant property.
+
+
+## Caveats
+GoodbyeXAML only looks at your lambda expression on a surface level; it will only
+subscribe to `INotifyPropertyChanged` objects that are *directly* referenced by
+the lambda expression.  If your `INotifyPropertyChanged` reference is buried
+behind a function call, GoodbyeXAML won't detect it.
+
+For example:
+```C#
+
+    // Assume CalculatorInput implements INotifyPropertyChanged
+    var vm = new CalculatorInput();
+
+    // This will NOT work:
+    int AddNumbers() => vm.OperandA + vm.OperandB;
+    var badResultText = new TextBlock()
+        ._Text(() => AddNumbers());
+
+    // But this WILL:
+    var goodResultText = new TextBlock()
+        ._Text(() => vm.OperandA + vm.OperandB);
+
+```
+
+In the first example, the lambda expression was just `() => AddNumbers()`.
+GoodbyeXAML will not dive into `AddNumbers()` when parsing it, so it won't see
+the part where you referenced `vm.OperandA` or `vm.OperandB`, and therefore it
+won't subscribe to `vm`'s `PropertyChanged` event.
+
+On the other hand, the second example WILL work because it references those
+two properties directly.  They're not obscured behind a function call.
 
 
 # Building
