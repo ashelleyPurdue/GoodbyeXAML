@@ -185,7 +185,7 @@ you bind a property to the result of a lambda expression.
 
 If you pass a parameterless lambda expression instead of a value, the property
 will be bound to the result of that lambda expression.  The property will
-automatically update whenever expression changes.
+automatically update whenever the expression changes.
 
 Under the hood, it does this by converting the lambda expression to an Expression
 Tree, and then searching it to find any references to a class implementing
