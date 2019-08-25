@@ -13,9 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodbyeXAML.Wpf.Framework",
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "GoodbyeXAML.Wpf.Shared.HandWritten", "GoodbyeXAML.Wpf.Shared.HandWritten\GoodbyeXAML.Wpf.Shared.HandWritten.shproj", "{5FE4A129-70B2-4AFD-AC6A-1FAF286B06AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodbyeXAML.Avalonia", "GoodbyeXAML.Avalonia\GoodbyeXAML.Avalonia.csproj", "{4DB5C311-14A6-482F-9BFD-CB1C83E45CF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodbyeXAML.Avalonia", "GoodbyeXAML.Avalonia\GoodbyeXAML.Avalonia.csproj", "{4DB5C311-14A6-482F-9BFD-CB1C83E45CF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodbyeXAML.Avalonia.Sample", "GoodbyeXAML.Avalonia.Sample\GoodbyeXAML.Avalonia.Sample.csproj", "{0E49108A-30BC-437C-95ED-C1E15A654D19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodbyeXAML.Avalonia.Sample", "GoodbyeXAML.Avalonia.Sample\GoodbyeXAML.Avalonia.Sample.csproj", "{0E49108A-30BC-437C-95ED-C1E15A654D19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LambdaBindingTests", "LambdaBindingTests\LambdaBindingTests.csproj", "{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -83,6 +85,18 @@ Global
 		{0E49108A-30BC-437C-95ED-C1E15A654D19}.Release|x64.Build.0 = Release|Any CPU
 		{0E49108A-30BC-437C-95ED-C1E15A654D19}.Release|x86.ActiveCfg = Release|Any CPU
 		{0E49108A-30BC-437C-95ED-C1E15A654D19}.Release|x86.Build.0 = Release|Any CPU
+		{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}.Debug|x64.Build.0 = Debug|Any CPU
+		{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}.Debug|x86.Build.0 = Debug|Any CPU
+		{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}.Release|x64.ActiveCfg = Release|Any CPU
+		{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}.Release|x64.Build.0 = Release|Any CPU
+		{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}.Release|x86.ActiveCfg = Release|Any CPU
+		{A15EEFC1-D73C-45A0-87F7-D795A3ADC6B1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
