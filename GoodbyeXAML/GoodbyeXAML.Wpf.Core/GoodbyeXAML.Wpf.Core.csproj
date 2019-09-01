@@ -4,6 +4,9 @@
         <TargetFramework>netcoreapp3.0</TargetFramework>
         <RootNamespace>GoodbyeXAML.Wpf.Core</RootNamespace>
         <UseWPF>true</UseWPF>
+        
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>0.0.1</Version>
       </PropertyGroup>
 
     <Import Project="../LambdaBinding/LambdaBinding.projitems" Label="Shared" />

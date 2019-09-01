@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeGenerator", "CodeGenera
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeGeneratorTests", "CodeGeneratorTests\CodeGeneratorTests.csproj", "{D527F814-DB82-4850-B551-8462D81FAE6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateAvalonia", "GenerateAvalonia\GenerateAvalonia.csproj", "{91E3680A-DA04-4093-B4E0-75ED3A0B66D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateWPF", "GenerateWPF\GenerateWPF.csproj", "{0C04F0D9-8D6B-4998-983E-C1CA7D8E9D60}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{D527F814-DB82-4850-B551-8462D81FAE6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D527F814-DB82-4850-B551-8462D81FAE6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D527F814-DB82-4850-B551-8462D81FAE6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91E3680A-DA04-4093-B4E0-75ED3A0B66D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91E3680A-DA04-4093-B4E0-75ED3A0B66D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91E3680A-DA04-4093-B4E0-75ED3A0B66D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91E3680A-DA04-4093-B4E0-75ED3A0B66D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C04F0D9-8D6B-4998-983E-C1CA7D8E9D60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C04F0D9-8D6B-4998-983E-C1CA7D8E9D60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C04F0D9-8D6B-4998-983E-C1CA7D8E9D60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C04F0D9-8D6B-4998-983E-C1CA7D8E9D60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
